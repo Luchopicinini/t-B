@@ -28,13 +28,13 @@ export default function Home() {
             rel="noopener"
             className="border border-gold bg-gold px-7 py-4 text-sm uppercase tracking-[0.1em] text-ink transition hover:-translate-y-0.5 hover:bg-transparent hover:text-gold"
           >
-            Cotizar por WhatsApp
+            Cotizar
           </a>
           <Link
             href="/como-funciona"
             className="border border-gold px-7 py-4 text-sm uppercase tracking-[0.1em] text-gold transition hover:-translate-y-0.5 hover:bg-gold hover:text-ink"
           >
-            Cómo funciona
+            ¿Cómo funciona?
           </Link>
         </div>
       </div>

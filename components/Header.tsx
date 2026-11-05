@@ -7,10 +7,10 @@ import { SITE, waLink } from "@/lib/site";
 
 const LINKS = [
   { href: "/", label: "Inicio" },
-  { href: "/quienes-somos", label: "Quiénes somos" },
   { href: "/servicios", label: "Servicios" },
   { href: "/como-funciona", label: "Cómo funciona" },
   { href: "/simulacion", label: "Simulación" },
+  { href: "/quienes-somos", label: "Quiénes somos" },
   { href: "/contacto", label: "Contacto" },
 ];
 
@@ -119,15 +119,6 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <a
-              href={waLink()}
-              target="_blank"
-              rel="noopener"
-              className="hidden border border-gold bg-gold px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.2em] text-ink transition hover:bg-transparent hover:text-gold md:inline-block"
-            >
-              Cotizar
-            </a>
-
             {/* Hamburguesa */}
             <button
               type="button"

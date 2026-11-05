@@ -3,6 +3,8 @@ export const SITE = {
   fullName: "T&B Global Logística Internacional",
   whatsapp: "5493518023464",
   whatsappDisplay: "+54 9 351 802-3464",
+  whatsapp2: "+56 9 7489 1078",        
+  whatsappDisplay2: "+56 9 7489 1078", 
   email: "tbgloballogistica@gmail.com",
   address: "Hilarion Plaza 4157, Cerro de las Rosas, Córdoba Capital (X5009)",
   pricePerKg: 10,

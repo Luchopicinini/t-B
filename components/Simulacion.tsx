@@ -42,6 +42,11 @@ const FAQS = [
   },
 ];
 
+// Clases de tarjeta, mismas que en Servicios y Cómo funciona
+const CARD = "border border-gold-dim bg-ink-2 p-6 sm:p-8 shadow-[0_18px_50px_-28px_rgba(0,0,0,.9)]";
+const CARD_HOVER = "transition duration-300 hover:-translate-y-1 hover:border-gold hover:shadow-[0_24px_60px_-28px_rgba(212,178,110,.35)]";
+const LABEL = "text-[11px] font-medium uppercase tracking-[0.25em] text-gold";
+
 export default function Simulacion() {
   const [mode, setMode] = useState<ModeId>("lcl");
   const [kg, setKg] = useState(200);
@@ -51,7 +56,7 @@ export default function Simulacion() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
-    const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    const els = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)");
     const io = new IntersectionObserver(
       (entries) =>
         entries.forEach((e) => {
@@ -73,7 +78,7 @@ export default function Simulacion() {
     `Simulación T&B Global`,
     `Modalidad: ${current.code} (${current.name})`,
     `Origen: ${origin}`,
-    mode === "lcl" ? `Peso estimado: ${kg} kg` : mode === "fcl" ? `Contenedor: ${container}'` : `Peso estimado: ${kg} kg`,
+    mode === "fcl" ? `Contenedor: ${container}'` : `Peso estimado: ${kg} kg`,
     flete !== null ? `Flete de referencia: USD ${flete.toLocaleString("es-AR")} (sin impuestos ni aduana)` : "Flete: a cotizar",
   ].join("\n");
 
@@ -93,10 +98,10 @@ export default function Simulacion() {
 
   return (
     <>
-      {/* Cargas de ejemplo */}
+      {/* Ejemplos */}
       <section data-reveal className="reveal mt-20">
-        <p className="mb-5 text-[11px] uppercase tracking-[0.3em] text-gold">Ejemplos rápidos</p>
-        <div className="grid gap-px bg-gold-faint sm:grid-cols-3">
+        <p className={`${LABEL} mb-6`}>Ejemplos rápidos</p>
+        <div className="grid gap-4 sm:grid-cols-3">
           {EXAMPLES.map((ex) => (
             <button
               key={ex.label}
@@ -104,47 +109,50 @@ export default function Simulacion() {
                 setMode(ex.mode);
                 setKg(ex.kg);
               }}
-              className="group bg-ink p-6 text-left transition-colors duration-300 hover:bg-ink-2"
+              className={`group ${CARD} ${CARD_HOVER} p-6 text-left`}
             >
               <p className="text-[11px] uppercase tracking-[0.2em] text-soft">{ex.label}</p>
               <p className="mt-3 font-serif text-2xl text-cream">{ex.kg} kg</p>
-              <p className="mt-2 text-xs text-gold/0 transition-colors duration-300 group-hover:text-gold">Cargar este ejemplo →</p>
+              <p className="mt-3 text-xs font-medium text-gold opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                Cargar este ejemplo →
+              </p>
             </button>
           ))}
         </div>
       </section>
 
       {/* Calculadora */}
-      <section data-reveal className="reveal mt-20 grid gap-14 md:grid-cols-12">
+      <section data-reveal className="reveal mt-12 grid gap-6 md:grid-cols-12">
         {/* Controles */}
-        <div className="space-y-10 md:col-span-7">
+        <div className={`${CARD} space-y-10 md:col-span-7`}>
           <div>
-            <p className="mb-4 text-[11px] uppercase tracking-[0.25em] text-gold">1. Modalidad</p>
-            <div role="tablist" className="grid grid-cols-3 border-b border-gold-faint">
-              {MODES.map((m) => (
-                <button
-                  key={m.id}
-                  role="tab"
-                  aria-selected={mode === m.id}
-                  onClick={() => setMode(m.id)}
-                  className={`relative py-4 text-center font-serif text-xl transition-colors duration-300 ${
-                    mode === m.id ? "text-gold" : "text-cream/45 hover:text-cream/80"
-                  }`}
-                >
-                  {m.code}
-                  <span
-                    className={`absolute inset-x-0 -bottom-px h-px bg-gold transition-transform duration-500 ${
-                      mode === m.id ? "scale-x-100" : "scale-x-0"
+            <p className={`${LABEL} mb-4`}>1. Modalidad</p>
+            <div role="tablist" className="grid gap-3 sm:grid-cols-3">
+              {MODES.map((m) => {
+                const selected = mode === m.id;
+                return (
+                  <button
+                    key={m.id}
+                    role="tab"
+                    aria-selected={selected}
+                    onClick={() => setMode(m.id)}
+                    className={`border p-4 text-center transition duration-300 ${
+                      selected
+                        ? "border-gold bg-gold/10 shadow-[0_16px_40px_-22px_rgba(212,178,110,.5)]"
+                        : "border-gold-dim bg-ink hover:-translate-y-0.5 hover:border-gold"
                     }`}
-                  />
-                </button>
-              ))}
+                  >
+                    <span className={`block font-serif text-xl ${selected ? "text-gold" : "text-cream"}`}>{m.code}</span>
+                    <span className="mt-1 block text-[11px] text-soft">{m.name}</span>
+                  </button>
+                );
+              })}
             </div>
-            <p className="mt-4 text-sm text-soft">{current.hint}</p>
+            <p className="mt-4 text-sm text-cream/90">{current.hint}</p>
           </div>
 
           <div>
-            <p className="mb-4 text-[11px] uppercase tracking-[0.25em] text-gold">2. Origen</p>
+            <p className={`${LABEL} mb-4`}>2. Origen</p>
             <div className="flex flex-wrap gap-2">
               {ORIGINS.map((o) => (
                 <button
@@ -152,7 +160,9 @@ export default function Simulacion() {
                   onClick={() => setOrigin(o)}
                   aria-pressed={origin === o}
                   className={`border px-4 py-2 text-xs uppercase tracking-[0.18em] transition-colors duration-300 ${
-                    origin === o ? "border-gold bg-gold text-ink" : "border-gold-dim text-cream/70 hover:border-gold hover:text-cream"
+                    origin === o
+                      ? "border-gold bg-gold text-ink"
+                      : "border-gold-dim bg-ink text-cream hover:border-gold"
                   }`}
                 >
                   {o}
@@ -163,15 +173,17 @@ export default function Simulacion() {
 
           {mode === "fcl" ? (
             <div>
-              <p className="mb-4 text-[11px] uppercase tracking-[0.25em] text-gold">3. Tamaño del contenedor</p>
-              <div className="grid gap-2 sm:grid-cols-2">
+              <p className={`${LABEL} mb-4`}>3. Tamaño del contenedor</p>
+              <div className="grid gap-3 sm:grid-cols-2">
                 {CONTAINERS.map((c) => (
                   <button
                     key={c.id}
                     onClick={() => setContainer(c.id)}
                     aria-pressed={container === c.id}
-                    className={`border px-5 py-4 text-left text-sm transition-colors duration-300 ${
-                      container === c.id ? "border-gold bg-gold/10 text-gold" : "border-gold-dim text-cream/80 hover:border-gold"
+                    className={`border px-5 py-4 text-left text-sm transition duration-300 ${
+                      container === c.id
+                        ? "border-gold bg-gold/10 text-gold"
+                        : "border-gold-dim bg-ink text-cream hover:border-gold"
                     }`}
                   >
                     {c.label}
@@ -182,7 +194,7 @@ export default function Simulacion() {
           ) : (
             <div>
               <div className="mb-4 flex items-baseline justify-between">
-                <p className="text-[11px] uppercase tracking-[0.25em] text-gold">3. Peso estimado</p>
+                <p className={LABEL}>3. Peso estimado</p>
                 <p className="font-serif text-2xl text-cream">
                   {kg.toLocaleString("es-AR")} <span className="font-sans text-sm text-soft">kg</span>
                 </p>
@@ -206,94 +218,88 @@ export default function Simulacion() {
         </div>
 
         {/* Resultado */}
-        <aside className="md:col-span-5">
-          <div className="sticky top-28 border border-gold-dim bg-ink-2 p-8">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-gold">Resultado estimado</p>
+        <aside className={`${CARD} md:col-span-5 md:sticky md:top-28 md:self-start`}>
+          <p className={LABEL}>Resultado estimado</p>
 
-            <div className="mt-6">
-              {flete !== null ? (
-                <>
-                  <p className="font-serif text-5xl text-cream tabular-nums">
-                    USD {flete.toLocaleString("es-AR")}
-                  </p>
-                  <p className="mt-2 text-xs text-soft">
-                    Flete de referencia · {SITE.pricePerKg} USD por kilo
-                  </p>
-                </>
-              ) : (
-                <>
-                  <p className="font-serif text-3xl text-cream">A cotizar</p>
-                  <p className="mt-2 text-xs text-soft">Depende de la ruta, la temporada y el contenedor.</p>
-                </>
-              )}
-            </div>
+          <div className="mt-6">
+            {flete !== null ? (
+              <>
+                <p className="font-serif text-5xl tabular-nums text-cream">
+                  USD {flete.toLocaleString("es-AR")}
+                </p>
+                <p className="mt-2 text-xs text-cream/80">Flete de referencia · {SITE.pricePerKg} USD por kilo</p>
+              </>
+            ) : (
+              <>
+                <p className="font-serif text-3xl text-cream">A cotizar</p>
+                <p className="mt-2 text-xs text-cream/80">Depende de la ruta, la temporada y el contenedor.</p>
+              </>
+            )}
+          </div>
 
-            <ul className="mt-8 divide-y divide-gold-faint border-y border-gold-faint text-sm">
-              <li className="flex justify-between py-3">
-                <span className="text-cream/80">Flete</span>
-                <span className="text-cream/60">{flete !== null ? "Incluido en la referencia" : "A cotizar"}</span>
-              </li>
-              <li className="flex justify-between py-3">
-                <span className="text-cream/80">Despacho aduanero</span>
-                <span className="text-cream/60">Según la cotización</span>
-              </li>
-              <li className="flex justify-between py-3">
-                <span className="text-cream/80">Impuestos y tasas</span>
-                <span className="text-cream/60">Según aduana</span>
-              </li>
-              <li className="flex justify-between py-3">
-                <span className="text-cream/80">Entrega en tu puerta</span>
-                <span className="text-cream/60">Según la cotización</span>
-              </li>
-            </ul>
+          <ul className="mt-8 divide-y divide-gold-dim border-y border-gold-dim text-sm">
+            <li className="flex justify-between gap-4 py-3">
+              <span className="text-cream">Flete</span>
+              <span className="text-right text-cream/75">{flete !== null ? "Incluido en la referencia" : "A cotizar"}</span>
+            </li>
+            <li className="flex justify-between gap-4 py-3">
+              <span className="text-cream">Despacho aduanero</span>
+              <span className="text-right text-cream/75">Según la cotización</span>
+            </li>
+            <li className="flex justify-between gap-4 py-3">
+              <span className="text-cream">Impuestos y tasas</span>
+              <span className="text-right text-cream/75">Según aduana</span>
+            </li>
+            <li className="flex justify-between gap-4 py-3">
+              <span className="text-cream">Entrega en tu puerta</span>
+              <span className="text-right text-cream/75">Según la cotización</span>
+            </li>
+          </ul>
 
-            <p className="mt-6 text-xs leading-relaxed text-soft">
-              Valores orientativos. No incluyen impuestos ni gastos de aduana. La cotización formal se confirma con
-              tu carga concreta.
-            </p>
+          <p className="mt-6 text-xs leading-relaxed text-cream/75">
+            Valores orientativos. No incluyen impuestos ni gastos de aduana. La cotización formal se confirma con tu
+            carga concreta.
+          </p>
 
-            <div className="mt-8 flex flex-col gap-3">
-              <a
-                href={waLink(waText)}
-                target="_blank"
-                rel="noopener"
-                className="block border border-gold bg-gold py-3.5 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-ink transition hover:bg-transparent hover:text-gold"
-              >
-                Pedir cotización formal
-              </a>
-              <button
-                onClick={copy}
-                className="text-center text-[11px] uppercase tracking-[0.2em] text-soft transition hover:text-gold"
-              >
-                {copied ? "Resumen copiado" : "Copiar resumen"}
-              </button>
-            </div>
+          <div className="mt-8 flex flex-col gap-3">
+            <a
+              href={waLink(waText)}
+              target="_blank"
+              rel="noopener"
+              className="block border border-gold bg-gold py-3.5 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-ink transition hover:bg-transparent hover:text-gold"
+            >
+              Pedir cotización formal
+            </a>
+            <button
+              onClick={copy}
+              className="text-center text-[11px] uppercase tracking-[0.2em] text-cream/75 transition hover:text-gold"
+            >
+              {copied ? "Resumen copiado" : "Copiar resumen"}
+            </button>
           </div>
         </aside>
       </section>
 
-      {/* Preguntas */}
-      <section data-reveal className="reveal mt-32 grid gap-12 md:grid-cols-12">
-        <div className="md:col-span-4">
-          <p className="text-[11px] uppercase tracking-[0.3em] text-gold">Dudas frecuentes</p>
-          <h2 className="mt-3 font-serif text-2xl text-cream sm:text-3xl">Sobre los costos</h2>
-        </div>
-        <ul className="divide-y divide-gold-faint border-y border-gold-faint md:col-span-8">
+      {/* Preguntas en tarjetas */}
+      <section data-reveal className="reveal mt-24">
+        <p className={LABEL}>Dudas frecuentes</p>
+        <h2 className="mt-3 font-serif text-2xl text-cream sm:text-3xl">Sobre los costos</h2>
+        <ul className="mt-8 grid gap-4 md:grid-cols-2">
           {FAQS.map((f, i) => {
             const open = openFaq === i;
             return (
-              <li key={f.q}>
+              <li key={f.q} className={`${CARD} p-0 ${open ? "border-gold" : ""}`}>
                 <button
                   onClick={() => setOpenFaq(open ? null : i)}
                   aria-expanded={open}
-                  className="flex w-full items-center justify-between gap-6 py-5 text-left transition hover:text-gold"
+                  className="flex w-full items-center justify-between gap-6 p-6 text-left transition hover:text-gold"
                 >
                   <span className="text-base text-cream">{f.q}</span>
                   <span className={`text-xl text-gold transition-transform duration-300 ${open ? "rotate-45" : ""}`}>+</span>
                 </button>
-                <div className={`grid transition-all duration-500 ${open ? "grid-rows-[1fr] pb-6" : "grid-rows-[0fr]"}`}>
+                <div className={`grid transition-all duration-500 ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                   <div className="overflow-hidden">
-                    <p className="max-w-2xl text-sm leading-relaxed text-soft">{f.a}</p>
+                    <p className="px-6 pb-6 text-sm leading-relaxed text-cream/90">{f.a}</p>
                   </div>
                 </div>
               </li>
@@ -302,18 +308,18 @@ export default function Simulacion() {
         </ul>
       </section>
 
-      {/* Cierre */}
-      <section data-reveal className="reveal mt-32 border-t border-gold-faint pt-14">
-        <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
+      {/* Cierre en tarjeta */}
+      <section data-reveal className="reveal mt-24">
+        <div className={`${CARD} flex flex-col items-start justify-between gap-8 md:flex-row md:items-center`}>
           <div>
             <p className="font-serif text-2xl text-cream sm:text-3xl">¿Querés el número exacto?</p>
-            <p className="mt-2 text-sm text-soft">Contanos tu carga y te respondemos con una cotización formal.</p>
+            <p className="mt-2 text-sm text-cream/85">Contanos tu carga y te respondemos con una cotización formal.</p>
           </div>
           <div className="flex flex-wrap gap-6 text-sm">
-            <a href={waLink(waText)} target="_blank" rel="noopener" className="text-gold underline-offset-4 hover:underline">
+            <a href={waLink(waText)} target="_blank" rel="noopener" className="font-medium text-gold underline-offset-4 hover:underline">
               Cotizar por WhatsApp
             </a>
-            <Link href="/como-funciona" className="text-cream/80 underline-offset-4 hover:text-gold hover:underline">
+            <Link href="/como-funciona" className="text-cream underline-offset-4 hover:text-gold hover:underline">
               Cómo funciona
             </Link>
           </div>
@@ -323,6 +329,7 @@ export default function Simulacion() {
       <style>{`
         .reveal { opacity: 0; transform: translateY(24px); transition: opacity .9s ease, transform .9s cubic-bezier(.2,.8,.2,1); }
         .reveal.is-in { opacity: 1; transform: none; }
+        select option { background: #0a0907; color: #f5ead2; }
         @media (prefers-reduced-motion: reduce) {
           .reveal { opacity: 1; transform: none; transition: none; }
         }

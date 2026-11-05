@@ -89,12 +89,18 @@ const DOCS = [
   "Certificados que requiera tu producto",
 ];
 
+// Clases de tarjeta, mismas que en Servicios
+const CARD = "border border-gold-dim bg-ink-2 p-6 sm:p-8 shadow-[0_18px_50px_-28px_rgba(0,0,0,.9)]";
+const CARD_HOVER = "transition duration-300 hover:-translate-y-1 hover:border-gold hover:shadow-[0_24px_60px_-28px_rgba(212,178,110,.35)]";
+const LABEL = "text-[11px] font-medium uppercase tracking-[0.25em] text-gold";
+
 export default function ComoFunciona() {
   const [active, setActive] = useState(0);
   const [checked, setChecked] = useState<boolean[]>(DOCS.map(() => false));
 
+  // Revelado al hacer scroll. Se vuelve a configurar al cambiar de paso.
   useEffect(() => {
-    const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    const els = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)");
     const io = new IntersectionObserver(
       (entries) =>
         entries.forEach((e) => {
@@ -107,8 +113,9 @@ export default function ComoFunciona() {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, [active]);
 
+  // Flechas del teclado
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement) return;
@@ -128,71 +135,73 @@ export default function ComoFunciona() {
 
   return (
     <>
-      {/* Línea de progreso y selector de pasos */}
+      {/* Selector de pasos en tarjetas */}
       <section data-reveal className="reveal mt-20">
-        <div className="relative">
-          <div className="absolute inset-x-0 top-[13px] h-px bg-gold-faint" />
-          <div
-            className="absolute left-0 top-[13px] h-px bg-gold transition-[width] duration-700 ease-out"
-            style={{ width: `${progress}%` }}
-          />
-          <ol className="relative grid grid-cols-3 gap-y-8 md:grid-cols-6">
-            {STEPS.map((s, i) => {
-              const isActive = i === active;
-              const isDone = i < active;
-              return (
-                <li key={s.short} className="flex justify-center">
-                  <button
-                    onClick={() => setActive(i)}
-                    aria-current={isActive ? "step" : undefined}
-                    className="group flex flex-col items-center gap-3 text-center"
-                  >
-                    <span
-                      className={`grid h-7 w-7 place-items-center rounded-full border text-[11px] transition-all duration-500 ${
-                        isActive
-                          ? "scale-110 border-gold bg-gold text-ink"
-                          : isDone
-                          ? "border-gold bg-ink text-gold"
-                          : "border-gold-dim bg-ink text-soft group-hover:border-gold group-hover:text-gold"
-                      }`}
+        <div className={`${CARD} p-6 sm:p-8`}>
+          <div className="relative">
+            <div className="absolute inset-x-0 top-[13px] h-[2px] rounded-full bg-gold-faint" />
+            <div
+              className="absolute left-0 top-[13px] h-[2px] rounded-full bg-gold transition-[width] duration-700 ease-out"
+              style={{ width: `${progress}%` }}
+            />
+            <ol className="relative grid grid-cols-3 gap-y-8 md:grid-cols-6">
+              {STEPS.map((s, i) => {
+                const isActive = i === active;
+                const isDone = i < active;
+                return (
+                  <li key={s.short} className="flex justify-center">
+                    <button
+                      onClick={() => setActive(i)}
+                      aria-current={isActive ? "step" : undefined}
+                      className="group flex flex-col items-center gap-3 text-center"
                     >
-                      {i + 1}
-                    </span>
-                    <span
-                      className={`text-[11px] uppercase tracking-[0.18em] transition-colors duration-300 ${
-                        isActive ? "text-gold" : "text-soft group-hover:text-cream"
-                      }`}
-                    >
-                      {s.short}
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
+                      <span
+                        className={`grid h-7 w-7 place-items-center rounded-full border text-[11px] transition-all duration-500 ${
+                          isActive
+                            ? "scale-110 border-gold bg-gold text-ink"
+                            : isDone
+                            ? "border-gold bg-ink text-gold"
+                            : "border-gold-dim bg-ink text-cream/70 group-hover:border-gold group-hover:text-gold"
+                        }`}
+                      >
+                        {i + 1}
+                      </span>
+                      <span
+                        className={`text-[11px] uppercase tracking-[0.18em] transition-colors duration-300 ${
+                          isActive ? "text-gold" : "text-soft group-hover:text-cream"
+                        }`}
+                      >
+                        {s.short}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
         </div>
       </section>
 
       {/* Detalle del paso activo */}
-      <section className="mt-16 grid gap-12 md:grid-cols-12">
-        <div key={active} className="panel-enter md:col-span-7">
-          <div className="mb-6 flex items-center gap-4">
+      <section className="mt-8 grid gap-6 md:grid-cols-12">
+        <div key={active} className={`${CARD} panel-enter md:col-span-7`}>
+          <div className="mb-6 flex flex-wrap items-center gap-4">
             <span className="font-serif text-5xl text-gold">0{active + 1}</span>
-            <span className="border border-gold-dim px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-soft">
-              Lo hace: <span className="text-cream">{WHO_LABEL[step.who]}</span>
+            <span className="border border-gold-dim px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-cream/80">
+              Lo hace: <span className="text-gold">{WHO_LABEL[step.who]}</span>
             </span>
           </div>
           <h2 className="font-serif text-3xl leading-tight text-cream sm:text-4xl">{step.title}</h2>
-          <p className="mt-5 text-base leading-relaxed text-cream/80">{step.text}</p>
+          <p className="mt-5 text-base leading-relaxed text-cream/90">{step.text}</p>
 
           <ul className="mt-8 space-y-3">
             {step.detail.map((d, i) => (
               <li
                 key={d}
-                className="point-in flex gap-3 text-sm text-cream/75"
+                className="point-in flex gap-3 text-sm text-cream"
                 style={{ animationDelay: `${150 + i * 90}ms` }}
               >
-                <span className="mt-2 h-px w-3 shrink-0 bg-gold" />
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
                 <span>{d}</span>
               </li>
             ))}
@@ -202,37 +211,39 @@ export default function ComoFunciona() {
             <button
               onClick={() => setActive((v) => Math.max(v - 1, 0))}
               disabled={active === 0}
-              className="text-sm text-soft transition hover:text-gold disabled:opacity-30"
+              className="text-sm text-cream/80 transition hover:text-gold disabled:opacity-30"
             >
               ← Anterior
             </button>
             <button
               onClick={() => setActive((v) => Math.min(v + 1, STEPS.length - 1))}
               disabled={active === STEPS.length - 1}
-              className="text-sm text-gold transition hover:underline disabled:opacity-30"
+              className="text-sm font-medium text-gold transition hover:underline disabled:opacity-30"
             >
               Siguiente →
             </button>
           </div>
         </div>
 
-        {/* Responsabilidades */}
-        <aside className="md:col-span-5">
-          <p className="mb-5 text-[11px] uppercase tracking-[0.3em] text-gold">Quién hace qué</p>
-          <ul className="divide-y divide-gold-faint border-y border-gold-faint">
+        {/* Quién hace qué */}
+        <aside className={`${CARD} md:col-span-5`}>
+          <p className={`${LABEL} mb-5`}>Quién hace qué</p>
+          <ul className="space-y-2">
             {STEPS.map((s, i) => (
               <li key={s.title}>
                 <button
                   onClick={() => setActive(i)}
-                  className={`flex w-full items-center justify-between gap-4 py-4 text-left transition ${
-                    i === active ? "text-gold" : "text-cream/70 hover:text-cream"
+                  className={`flex w-full items-center justify-between gap-4 border px-4 py-3 text-left transition duration-300 ${
+                    i === active
+                      ? "border-gold bg-gold/10 text-gold"
+                      : "border-gold-dim text-cream hover:border-gold"
                   }`}
                 >
                   <span className="text-sm">
-                    <span className="mr-3 font-serif text-base text-gold/70">0{i + 1}</span>
+                    <span className="mr-3 font-serif text-base text-gold">0{i + 1}</span>
                     {s.short}
                   </span>
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-soft">{WHO_LABEL[s.who]}</span>
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-cream/70">{WHO_LABEL[s.who]}</span>
                 </button>
               </li>
             ))}
@@ -240,25 +251,30 @@ export default function ComoFunciona() {
         </aside>
       </section>
 
-      {/* Tiempos */}
-      <section data-reveal className="reveal mt-32 grid gap-12 md:grid-cols-12">
-        <div className="md:col-span-4">
-          <p className="text-[11px] uppercase tracking-[0.3em] text-gold">Plazos</p>
-          <h2 className="mt-3 font-serif text-2xl text-cream sm:text-3xl">Cuánto tarda</h2>
-        </div>
-        <div className="md:col-span-8">
-          <p className="text-base leading-relaxed text-cream/80">
-            El tiempo total depende de tres cosas: el origen, la modalidad que elijas y la rapidez con la que se
-            junte la documentación. Por eso no damos un plazo genérico: te lo confirmamos en la cotización, con
-            las fechas reales para tu caso.
-          </p>
-          <div className="mt-10 grid gap-px bg-gold-faint sm:grid-cols-3">
+      {/* Plazos */}
+      <section data-reveal className="reveal mt-24">
+        <div className={CARD}>
+          <div className="grid gap-10 md:grid-cols-12">
+            <div className="md:col-span-4">
+              <p className={LABEL}>Plazos</p>
+              <h2 className="mt-3 font-serif text-2xl text-cream sm:text-3xl">Cuánto tarda</h2>
+            </div>
+            <div className="md:col-span-8">
+              <p className="text-base leading-relaxed text-cream/90">
+                El tiempo total depende de tres cosas: el origen, la modalidad que elijas y la rapidez con la que se
+                junte la documentación. Por eso no damos un plazo genérico: te lo confirmamos en la cotización, con
+                las fechas reales para tu caso.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {[
               { k: "Pedido y cotización", v: "Según tu consulta" },
               { k: "Viaje", v: "Según modalidad y origen" },
               { k: "Aduana y entrega", v: "Según documentación" },
             ].map((t) => (
-              <div key={t.k} className="bg-ink p-6">
+              <div key={t.k} className={`${CARD_HOVER} border border-gold-dim bg-ink p-6`}>
                 <p className="text-[11px] uppercase tracking-[0.2em] text-soft">{t.k}</p>
                 <p className="mt-3 font-serif text-lg text-cream">{t.v}</p>
               </div>
@@ -267,66 +283,72 @@ export default function ComoFunciona() {
         </div>
       </section>
 
-      {/* Checklist de documentos */}
-      <section data-reveal className="reveal mt-32 grid gap-12 md:grid-cols-12">
-        <div className="md:col-span-4">
-          <p className="text-[11px] uppercase tracking-[0.3em] text-gold">Antes de empezar</p>
-          <h2 className="mt-3 font-serif text-2xl text-cream sm:text-3xl">Preparate la documentación</h2>
-          <p className="mt-4 text-sm text-soft">
-            Marcá lo que ya tenés. La lista exacta se confirma según tu producto.
-          </p>
-          <div className="mt-8">
-            <div className="flex justify-between text-[11px] uppercase tracking-[0.2em] text-soft">
-              <span>Listo</span>
-              <span className="tabular-nums text-cream/70">
-                {docsDone} / {DOCS.length}
-              </span>
+      {/* Checklist en tarjetas */}
+      <section data-reveal className="reveal mt-24">
+        <div className={CARD}>
+          <div className="grid gap-10 md:grid-cols-12">
+            <div className="md:col-span-4">
+              <p className={LABEL}>Antes de empezar</p>
+              <h2 className="mt-3 font-serif text-2xl text-cream sm:text-3xl">Preparate la documentación</h2>
+              <p className="mt-4 text-sm text-cream/85">
+                Marcá lo que ya tenés. La lista exacta se confirma según tu producto.
+              </p>
+              <div className="mt-8">
+                <div className="flex justify-between text-[11px] uppercase tracking-[0.2em] text-soft">
+                  <span>Listo</span>
+                  <span className="tabular-nums text-cream">
+                    {docsDone} / {DOCS.length}
+                  </span>
+                </div>
+                <div className="mt-3 h-[3px] w-full rounded-full bg-gold-faint">
+                  <div
+                    className="h-[3px] rounded-full bg-gold transition-[width] duration-500"
+                    style={{ width: `${(docsDone / DOCS.length) * 100}%` }}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="mt-3 h-px w-full bg-gold-faint">
-              <div
-                className="h-px bg-gold transition-[width] duration-500"
-                style={{ width: `${(docsDone / DOCS.length) * 100}%` }}
-              />
-            </div>
+
+            <ul className="grid gap-4 sm:grid-cols-2 md:col-span-8">
+              {DOCS.map((d, i) => (
+                <li key={d}>
+                  <button
+                    onClick={() => toggleDoc(i)}
+                    aria-pressed={checked[i]}
+                    className={`${CARD_HOVER} flex w-full items-center gap-4 border p-5 text-left ${
+                      checked[i] ? "border-gold bg-gold/10" : "border-gold-dim bg-ink"
+                    }`}
+                  >
+                    <span
+                      className={`grid h-6 w-6 shrink-0 place-items-center border transition-colors duration-300 ${
+                        checked[i] ? "border-gold bg-gold text-ink" : "border-gold-dim text-transparent"
+                      }`}
+                    >
+                      <svg viewBox="0 0 16 16" className="h-3 w-3" aria-hidden="true">
+                        <path d="M3 8.5 L6.5 12 L13 4.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                    <span className={`text-sm transition-colors ${checked[i] ? "text-gold" : "text-cream"}`}>{d}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-
-        <ul className="divide-y divide-gold-faint border-y border-gold-faint md:col-span-8">
-          {DOCS.map((d, i) => (
-            <li key={d}>
-              <button
-                onClick={() => toggleDoc(i)}
-                aria-pressed={checked[i]}
-                className="flex w-full items-center gap-5 py-5 text-left transition hover:text-gold"
-              >
-                <span
-                  className={`grid h-5 w-5 shrink-0 place-items-center border transition-colors duration-300 ${
-                    checked[i] ? "border-gold bg-gold text-ink" : "border-gold-dim text-transparent"
-                  }`}
-                >
-                  <svg viewBox="0 0 16 16" className="h-3 w-3" aria-hidden="true">
-                    <path d="M3 8.5 L6.5 12 L13 4.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-                <span className={`text-sm transition-colors ${checked[i] ? "text-cream" : "text-cream/75"}`}>{d}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
       </section>
 
-      {/* Cierre */}
-      <section data-reveal className="reveal mt-32 border-t border-gold-faint pt-14">
-        <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
+      {/* Cierre en tarjeta */}
+      <section data-reveal className="reveal mt-24">
+        <div className={`${CARD} flex flex-col items-start justify-between gap-8 md:flex-row md:items-center`}>
           <div>
             <p className="font-serif text-2xl text-cream sm:text-3xl">¿Empezamos?</p>
-            <p className="mt-2 text-sm text-soft">Mandanos el producto y el proveedor, y te respondemos con una cotización.</p>
+            <p className="mt-2 text-sm text-cream/85">Mandanos el producto y el proveedor, y te respondemos con una cotización.</p>
           </div>
           <div className="flex flex-wrap gap-6 text-sm">
-            <a href={waLink()} target="_blank" rel="noopener" className="text-gold underline-offset-4 hover:underline">
+            <a href={waLink()} target="_blank" rel="noopener" className="font-medium text-gold underline-offset-4 hover:underline">
               Cotizar por WhatsApp
             </a>
-            <Link href="/servicios" className="text-cream/80 underline-offset-4 hover:text-gold hover:underline">
+            <Link href="/servicios" className="text-cream underline-offset-4 hover:text-gold hover:underline">
               Ver modalidades
             </Link>
           </div>
