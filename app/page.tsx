@@ -1,20 +1,12 @@
 ﻿import Link from "next/link";
 import { waLink } from "@/lib/site";
+import HeroVideo from "@/components/HeroVideo";
 
 export default function Home() {
   return (
     <section className="relative flex min-h-screen items-center overflow-hidden">
-      <video
-        className="absolute inset-0 h-full w-full object-cover"
-        src="/media/hero.mp4"
-        poster="/media/hero.jpg"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-hidden="true"
-      />
+      <HeroVideo />
+
       <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/80 to-ink/30" />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink to-transparent" />
 
