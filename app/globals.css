@@ -22,6 +22,7 @@ body {
   color: var(--color-cream);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -30,29 +31,46 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
 
-.theme-light {
-  --color-ink: #ffffff;
-  --color-ink-2: #f7f3ea;
-  --color-gold: #8c6a2b;
-  --color-gold-dim: #cdb88a;
-  --color-gold-faint: #e7dfcc;
+/* Servicios y Cómo funciona: fondo claro solo en esas páginas */
+.svc-light {
+  background: #ffffff;
   --color-cream: #1c1812;
-  --color-soft: #6e6456;
-}
+  --color-soft: #5e5444;
+  --color-gold: #8c6428;
+  --color-gold-dim: #cdb68a;
+  --color-gold-faint: #e4d9c1;
 }
 
-.theme-light {
-  --color-ink: #ffffff;
-  --color-ink-2: #f7f3ea;
-  --color-gold: #8c6a2b;
-  --color-gold-dim: #cdb88a;
-  --color-gold-faint: #e7dfcc;
+.como-light {
+  background: #fbf8f1;
   --color-cream: #1c1812;
-  --color-soft: #6e6456;
+  --color-soft: #5e5444;
+  --color-gold: #8c6428;
+  --color-gold-dim: #cdb68a;
+  --color-gold-faint: #e4d9c1;
 }
 
-/* Evita que cualquier bloque ancho empuje la página hacia los costados */
-body {
-  overflow-x: clip;
+/* Textos con opacidad: oscuros y legibles sobre fondo claro */
+.svc-light [class*="text-cream/"],
+.como-light [class*="text-cream/"] {
+  color: #3a3226 !important;
+}
+
+.svc-light [class*="text-soft"],
+.como-light [class*="text-soft"] {
+  color: #5e5444 !important;
+}
+
+/* Pestañas inactivas: gris visible */
+.svc-light button[role="tab"][aria-selected="false"],
+.como-light button[role="tab"][aria-selected="false"] {
+  color: #7a6d59 !important;
+}
+
+/* Superficies blancas: texto oscuro */
+.svc-light .bg-white,
+.como-light .bg-white {
+  color: #1c1812;
 }

@@ -18,66 +18,42 @@ const STEPS: { title: string; short: string; who: Who; text: string; detail: str
     short: "Pedido",
     who: "vos",
     text: "Nos pasás el producto, la cantidad aproximada, el peso y los datos de tu proveedor. Con eso ya podemos empezar.",
-    detail: [
-      "Descripción del producto y cantidad",
-      "Peso y medidas aproximadas, si las tenés",
-      "Nombre y contacto del proveedor",
-    ],
+    detail: ["Descripción del producto y cantidad", "Peso y medidas aproximadas, si las tenés", "Nombre y contacto del proveedor"],
   },
   {
     title: "Recibí tu presupuesto",
     short: "Cotización",
     who: "nosotros",
     text: "Te enviamos una cotización clara: flete, despacho y gastos. Sin letra chica. Si algo cambia, te avisamos antes de seguir.",
-    detail: [
-      "Cálculo según peso, volumen o contenedor",
-      "Detalle de flete y gastos de aduana",
-      "Plazo estimado para tu caso",
-    ],
+    detail: ["Cálculo según peso, volumen o contenedor", "Detalle de flete y gastos de aduana", "Plazo estimado para tu caso"],
   },
   {
     title: "Coordinamos con tu proveedor",
     short: "Origen",
     who: "proveedor",
     text: "Una vez que confirmás, organizamos con tu proveedor la fecha de retiro o recepción de la mercadería en origen.",
-    detail: [
-      "Confirmación de la orden de compra",
-      "Fecha de retiro o entrega en nuestro depósito",
-      "Embalaje y documentación del proveedor",
-    ],
+    detail: ["Confirmación de la orden de compra", "Fecha de retiro o entrega en nuestro depósito", "Embalaje y documentación del proveedor"],
   },
   {
     title: "Consolidamos y embarcamos",
     short: "Embarque",
     who: "nosotros",
     text: "Tu carga se consolida con la de otros importadores, o se carga en tu contenedor, y sale hacia Argentina por la vía que corresponda.",
-    detail: [
-      "Consolidación y control de la carga",
-      "Emisión del conocimiento de embarque",
-      "Seguimiento del envío durante el viaje",
-    ],
+    detail: ["Consolidación y control de la carga", "Emisión del conocimiento de embarque", "Seguimiento del envío durante el viaje"],
   },
   {
     title: "Gestionamos la aduana",
     short: "Aduana",
     who: "nosotros",
     text: "Nuestro despachante presenta la documentación ante aduana y resuelve el ingreso. Vos no tenés que hacer ningún trámite.",
-    detail: [
-      "Presentación de documentación ante aduana",
-      "Liquidación de impuestos y tasas",
-      "Coordinación de inspecciones si corresponden",
-    ],
+    detail: ["Presentación de documentación ante aduana", "Liquidación de impuestos y tasas", "Coordinación de inspecciones si corresponden"],
   },
   {
     title: "Te la llevamos a tu puerta",
     short: "Entrega",
     who: "nosotros",
     text: "Entregamos la mercadería en tu comercio o depósito y te confirmamos cuando llegó.",
-    detail: [
-      "Transporte desde el puerto o aeropuerto",
-      "Entrega en la dirección que indiques",
-      "Confirmación al recibir la mercadería",
-    ],
+    detail: ["Transporte desde el puerto o aeropuerto", "Entrega en la dirección que indiques", "Confirmación al recibir la mercadería"],
   },
 ];
 
@@ -89,16 +65,15 @@ const DOCS = [
   "Certificados que requiera tu producto",
 ];
 
-// Clases de tarjeta: padding menor en celular
-const CARD = "border border-gold-dim bg-ink-2 p-5 sm:p-8 shadow-[0_18px_50px_-28px_rgba(0,0,0,.9)]";
-const CARD_HOVER = "transition duration-300 hover:-translate-y-1 hover:border-gold hover:shadow-[0_24px_60px_-28px_rgba(212,178,110,.35)]";
+// Tarjetas blancas con sombra suave (igual que Servicios)
+const CARD = "bg-white border border-gold-faint rounded-sm p-5 sm:p-8 shadow-[0_12px_30px_-18px_rgba(70,50,20,.3)]";
+const CARD_HOVER = "transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgba(70,50,20,.35)]";
 const LABEL = "text-[11px] font-medium uppercase tracking-[0.25em] text-gold";
 
 export default function ComoFunciona() {
   const [active, setActive] = useState(0);
   const [checked, setChecked] = useState<boolean[]>(DOCS.map(() => false));
 
-  // Revelado al hacer scroll. Se vuelve a configurar al cambiar de paso.
   useEffect(() => {
     const els = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)");
     const io = new IntersectionObserver(
@@ -115,7 +90,6 @@ export default function ComoFunciona() {
     return () => io.disconnect();
   }, [active]);
 
-  // Flechas del teclado
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement) return;
@@ -137,7 +111,7 @@ export default function ComoFunciona() {
     <>
       {/* Selector de pasos */}
       <section data-reveal className="reveal mt-16 sm:mt-20">
-        <div className={`${CARD}`}>
+        <div className={CARD}>
           <div className="relative">
             <div className="absolute inset-x-0 top-[11px] h-[2px] rounded-full bg-gold-faint sm:top-[13px]" />
             <div
@@ -158,10 +132,10 @@ export default function ComoFunciona() {
                       <span
                         className={`grid h-6 w-6 place-items-center rounded-full border text-[10px] transition-all duration-500 sm:h-7 sm:w-7 sm:text-[11px] ${
                           isActive
-                            ? "scale-110 border-gold bg-gold text-ink"
+                            ? "scale-110 border-gold bg-gold text-white"
                             : isDone
-                            ? "border-gold bg-ink text-gold"
-                            : "border-gold-dim bg-ink text-cream/70 group-hover:border-gold group-hover:text-gold"
+                            ? "border-gold bg-white text-gold"
+                            : "border-gold-dim bg-white text-cream/70 group-hover:border-gold group-hover:text-gold"
                         }`}
                       >
                         {i + 1}
@@ -276,7 +250,7 @@ export default function ComoFunciona() {
               { k: "Viaje", v: "Según modalidad y origen" },
               { k: "Aduana y entrega", v: "Según documentación" },
             ].map((t) => (
-              <div key={t.k} className={`${CARD_HOVER} border border-gold-dim bg-ink p-5 sm:p-6`}>
+              <div key={t.k} className={`${CARD_HOVER} border border-gold-faint bg-white p-5 sm:p-6`}>
                 <p className="text-[10px] uppercase tracking-[0.2em] text-soft sm:text-[11px]">{t.k}</p>
                 <p className="mt-2 font-serif text-base text-cream sm:mt-3 sm:text-lg">{t.v}</p>
               </div>
@@ -318,12 +292,12 @@ export default function ComoFunciona() {
                     onClick={() => toggleDoc(i)}
                     aria-pressed={checked[i]}
                     className={`${CARD_HOVER} flex w-full items-center gap-3 border p-4 text-left sm:gap-4 sm:p-5 ${
-                      checked[i] ? "border-gold bg-gold/10" : "border-gold-dim bg-ink"
+                      checked[i] ? "border-gold bg-gold/10" : "border-gold-faint bg-white"
                     }`}
                   >
                     <span
                       className={`grid h-6 w-6 shrink-0 place-items-center border transition-colors duration-300 ${
-                        checked[i] ? "border-gold bg-gold text-ink" : "border-gold-dim text-transparent"
+                        checked[i] ? "border-gold bg-gold text-white" : "border-gold-dim text-transparent"
                       }`}
                     >
                       <svg viewBox="0 0 16 16" className="h-3 w-3" aria-hidden="true">

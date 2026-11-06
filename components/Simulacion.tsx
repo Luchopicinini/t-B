@@ -42,9 +42,9 @@ const FAQS = [
   },
 ];
 
-// Clases de tarjeta: padding menor en celular
-const CARD = "border border-gold-dim bg-ink-2 p-5 sm:p-8 shadow-[0_18px_50px_-28px_rgba(0,0,0,.9)]";
-const CARD_HOVER = "transition duration-300 hover:-translate-y-1 hover:border-gold hover:shadow-[0_24px_60px_-28px_rgba(212,178,110,.35)]";
+// Tarjetas blancas con sombra suave (igual que Servicios y Cómo funciona)
+const CARD = "bg-white border border-gold-faint rounded-sm p-5 sm:p-8 shadow-[0_12px_30px_-18px_rgba(70,50,20,.3)]";
+const CARD_HOVER = "transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgba(70,50,20,.35)]";
 const LABEL = "text-[11px] font-medium uppercase tracking-[0.25em] text-gold";
 
 export default function Simulacion() {
@@ -109,7 +109,7 @@ export default function Simulacion() {
                 setMode(ex.mode);
                 setKg(ex.kg);
               }}
-              className={`group flex items-center justify-between gap-4 ${CARD} ${CARD_HOVER} p-5 text-left sm:block sm:p-6`}
+              className={`group flex items-center justify-between gap-4 ${CARD} ${CARD_HOVER} text-left sm:block`}
             >
               <div>
                 <p className="text-[11px] uppercase tracking-[0.2em] text-soft">{ex.label}</p>
@@ -140,8 +140,8 @@ export default function Simulacion() {
                     onClick={() => setMode(m.id)}
                     className={`border p-3 text-center transition duration-300 sm:p-4 ${
                       selected
-                        ? "border-gold bg-gold/10 shadow-[0_16px_40px_-22px_rgba(212,178,110,.5)]"
-                        : "border-gold-dim bg-ink hover:-translate-y-0.5 hover:border-gold"
+                        ? "border-gold bg-gold/10 shadow-[0_16px_40px_-22px_rgba(140,100,40,.4)]"
+                        : "border-gold-faint bg-white hover:-translate-y-0.5 hover:border-gold"
                     }`}
                   >
                     <span className={`block font-serif text-base sm:text-xl ${selected ? "text-gold" : "text-cream"}`}>{m.code}</span>
@@ -163,8 +163,8 @@ export default function Simulacion() {
                   aria-pressed={origin === o}
                   className={`border px-2 py-2 text-[11px] uppercase tracking-[0.12em] transition-colors duration-300 sm:px-4 sm:text-xs sm:tracking-[0.18em] ${
                     origin === o
-                      ? "border-gold bg-gold text-ink"
-                      : "border-gold-dim bg-ink text-cream hover:border-gold"
+                      ? "border-gold bg-gold text-white"
+                      : "border-gold-faint bg-white text-cream hover:border-gold"
                   }`}
                 >
                   {o}
@@ -185,7 +185,7 @@ export default function Simulacion() {
                     className={`border px-5 py-4 text-left text-sm transition duration-300 ${
                       container === c.id
                         ? "border-gold bg-gold/10 text-gold"
-                        : "border-gold-dim bg-ink text-cream hover:border-gold"
+                        : "border-gold-faint bg-white text-cream hover:border-gold"
                     }`}
                   >
                     {c.label}
@@ -209,7 +209,7 @@ export default function Simulacion() {
                 value={kg}
                 onChange={(e) => setKg(Number(e.target.value))}
                 aria-label="Peso estimado en kilos"
-                className="w-full accent-[#d4b26e]"
+                className="w-full accent-[#8c6428]"
               />
               <div className="mt-2 flex justify-between text-[10px] tracking-[0.15em] text-soft">
                 <span>10 kg</span>
@@ -229,17 +229,17 @@ export default function Simulacion() {
                 <p className="font-serif text-4xl tabular-nums text-cream sm:text-5xl">
                   USD {flete.toLocaleString("es-AR")}
                 </p>
-                <p className="mt-2 text-xs text-cream/80">Flete de referencia · {SITE.pricePerKg} USD por kilo</p>
+                <p className="mt-2 text-xs text-soft">Flete de referencia · {SITE.pricePerKg} USD por kilo</p>
               </>
             ) : (
               <>
                 <p className="font-serif text-2xl text-cream sm:text-3xl">A cotizar</p>
-                <p className="mt-2 text-xs text-cream/80">Depende de la ruta, la temporada y el contenedor.</p>
+                <p className="mt-2 text-xs text-soft">Depende de la ruta, la temporada y el contenedor.</p>
               </>
             )}
           </div>
 
-          <ul className="mt-6 divide-y divide-gold-dim border-y border-gold-dim text-sm sm:mt-8">
+          <ul className="mt-6 divide-y divide-gold-faint border-y border-gold-faint text-sm sm:mt-8">
             {[
               { k: "Flete", v: flete !== null ? "Incluido en la referencia" : "A cotizar" },
               { k: "Despacho aduanero", v: "Según la cotización" },
@@ -248,12 +248,12 @@ export default function Simulacion() {
             ].map((r) => (
               <li key={r.k} className="flex items-start justify-between gap-4 py-3">
                 <span className="text-cream">{r.k}</span>
-                <span className="text-right text-cream/75">{r.v}</span>
+                <span className="text-right text-soft">{r.v}</span>
               </li>
             ))}
           </ul>
 
-          <p className="mt-5 text-xs leading-relaxed text-cream/75 sm:mt-6">
+          <p className="mt-5 text-xs leading-relaxed text-soft sm:mt-6">
             Valores orientativos. No incluyen impuestos ni gastos de aduana. La cotización formal se confirma con tu
             carga concreta.
           </p>
@@ -263,13 +263,13 @@ export default function Simulacion() {
               href={waLink(waText)}
               target="_blank"
               rel="noopener"
-              className="block border border-gold bg-gold py-3.5 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-ink transition hover:bg-transparent hover:text-gold"
+              className="block border border-gold bg-gold py-3.5 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-white transition hover:bg-transparent hover:text-gold"
             >
               Pedir cotización formal
             </a>
             <button
               onClick={copy}
-              className="py-2 text-center text-[11px] uppercase tracking-[0.2em] text-cream/75 transition hover:text-gold"
+              className="py-2 text-center text-[11px] uppercase tracking-[0.2em] text-soft transition hover:text-gold"
             >
               {copied ? "Resumen copiado" : "Copiar resumen"}
             </button>
@@ -326,7 +326,7 @@ export default function Simulacion() {
       <style>{`
         .reveal { opacity: 0; transform: translateY(24px); transition: opacity .9s ease, transform .9s cubic-bezier(.2,.8,.2,1); }
         .reveal.is-in { opacity: 1; transform: none; }
-        select option { background: #0a0907; color: #f5ead2; }
+        select option { background: #ffffff; color: #1c1812; }
         @media (prefers-reduced-motion: reduce) {
           .reveal { opacity: 1; transform: none; transition: none; }
         }

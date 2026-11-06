@@ -12,7 +12,7 @@ const STATS = [
   { value: 2026, suffix: "", label: "Año de inicio de operaciones" },
 ];
 
-// PLACEHOLDER: completar con el equipo real (nombre, cargo, foto)
+// PLACEHOLDER: completar con el equipo real (nombre, cargo y una frase breve)
 const TEAM = [
   { name: "Nombre Apellido", role: "Fundador / Dirección", bio: "Breve descripción de la experiencia y el rol." },
   { name: "Nombre Apellido", role: "Operaciones y logística", bio: "Breve descripción de la experiencia y el rol." },
@@ -20,22 +20,10 @@ const TEAM = [
 ];
 
 const VALUES = [
-  {
-    title: "Claridad en cada cotización",
-    text: "Te mostramos flete, despacho y gastos por separado. Si algo cambia, lo sabés antes de seguir.",
-  },
-  {
-    title: "Un solo interlocutor",
-    text: "Coordinamos con tu proveedor, la naviera, el despachante y el transporte. Vos hablás con nosotros.",
-  },
-  {
-    title: "Cuidado de la mercadería",
-    text: "Controlamos la consolidación y el embalaje para que tu carga llegue en las mismas condiciones en que salió.",
-  },
-  {
-    title: "Pensado para comercios reales",
-    text: "No hace falta importar un contenedor entero. Adaptamos la modalidad a lo que tu negocio necesita.",
-  },
+  { title: "Claridad en cada cotización", text: "Te mostramos flete, despacho y gastos por separado. Si algo cambia, lo sabés antes de seguir." },
+  { title: "Un solo interlocutor", text: "Coordinamos con tu proveedor, la naviera, el despachante y el transporte. Vos hablás con nosotros." },
+  { title: "Cuidado de la mercadería", text: "Controlamos la consolidación y el embalaje para que tu carga llegue en las mismas condiciones en que salió." },
+  { title: "Pensado para comercios reales", text: "No hace falta importar un contenedor entero. Adaptamos la modalidad a lo que tu negocio necesita." },
 ];
 
 const HOW = [
@@ -44,6 +32,10 @@ const HOW = [
   { n: "III", title: "Ejecutamos", text: "Coordinamos el origen, el viaje, la aduana y la entrega." },
   { n: "IV", title: "Acompañamos", text: "Te informamos cada etapa hasta que la mercadería está en tu puerta." },
 ];
+
+// Superficie blanca con sombra suave (igual que Servicios, Cómo funciona y Simulación)
+const SURFACE = "bg-white rounded-sm shadow-[0_12px_30px_-18px_rgba(70,50,20,.3)] ring-1 ring-gold-faint";
+const LABEL = "text-[11px] font-medium uppercase tracking-[0.25em] text-gold";
 
 function Counter({ value, suffix }: { value: number; suffix: string }) {
   const [display, setDisplay] = useState(0);
@@ -87,7 +79,7 @@ export default function QuienesSomos() {
   const [activeOrigin, setActiveOrigin] = useState<string>(ORIGINS[0]);
 
   useEffect(() => {
-    const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    const els = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)");
     const io = new IntersectionObserver(
       (entries) =>
         entries.forEach((e) => {
@@ -105,14 +97,14 @@ export default function QuienesSomos() {
   return (
     <>
       {/* Historia */}
-      <section data-reveal className="reveal mt-20 grid gap-12 md:grid-cols-12">
+      <section data-reveal className="reveal mt-16 grid gap-12 sm:mt-20 md:grid-cols-12">
         <div className="md:col-span-5">
-          <p className="text-[11px] uppercase tracking-[0.3em] text-gold">Nuestra historia</p>
+          <p className={LABEL}>Nuestra historia</p>
           <h2 className="mt-3 font-serif text-3xl leading-tight text-cream sm:text-4xl">
             Una empresa argentina de logística e importación
           </h2>
         </div>
-        <div className="space-y-5 text-base leading-relaxed text-cream/80 md:col-span-7">
+        <div className="space-y-5 text-base leading-relaxed text-cream/85 md:col-span-7">
           <p>
             Nacimos para resolver algo que muchos comercios viven a diario: querer importar sin tener el volumen
             para un contenedor entero, y sin saber cómo manejar fletes, aduana y documentación.
@@ -129,9 +121,9 @@ export default function QuienesSomos() {
       </section>
 
       {/* Cifras */}
-      <section data-reveal className="reveal mt-24 grid grid-cols-2 gap-px bg-gold-faint md:grid-cols-4">
+      <section data-reveal className="reveal mt-20 grid grid-cols-2 gap-4 sm:mt-24 md:grid-cols-4">
         {STATS.map((s) => (
-          <div key={s.label} className="bg-ink px-6 py-10">
+          <div key={s.label} className={`${SURFACE} p-6 sm:p-8`}>
             <p className="font-serif text-4xl text-gold sm:text-5xl">
               <Counter value={s.value} suffix={s.suffix} />
             </p>
@@ -141,55 +133,58 @@ export default function QuienesSomos() {
       </section>
 
       {/* Valores */}
-      <section className="mt-32">
-        <div data-reveal className="reveal mb-14 max-w-2xl">
-          <p className="text-[11px] uppercase tracking-[0.3em] text-gold">Lo que nos guía</p>
+      <section className="mt-20 sm:mt-28">
+        <div data-reveal className="reveal mb-12 max-w-2xl">
+          <p className={LABEL}>Lo que nos guía</p>
           <h2 className="mt-3 font-serif text-3xl text-cream sm:text-4xl">Cuatro principios que no negociamos</h2>
         </div>
-        <div className="grid gap-px bg-gold-faint sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2">
           {VALUES.map((v, i) => (
             <article
               key={v.title}
               data-reveal
-              className="reveal group relative bg-ink p-8 transition-colors duration-500 hover:bg-ink-2 sm:p-10"
+              className={`reveal ${SURFACE} relative p-8 sm:p-10`}
               style={{ transitionDelay: `${i * 80}ms` }}
             >
-              <span className="font-serif text-sm text-gold/60">0{i + 1}</span>
+              <span className="font-serif text-sm text-gold">0{i + 1}</span>
               <h3 className="mt-4 text-xl text-cream">{v.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-soft">{v.text}</p>
-              <span className="absolute bottom-0 left-0 h-px w-0 bg-gold transition-all duration-700 group-hover:w-full" />
+              <p className="mt-3 text-sm leading-relaxed text-cream/80">{v.text}</p>
             </article>
           ))}
         </div>
       </section>
 
       {/* Cómo trabajamos */}
-      <section className="mt-32">
-        <div data-reveal className="reveal mb-14 max-w-2xl">
-          <p className="text-[11px] uppercase tracking-[0.3em] text-gold">Cómo trabajamos</p>
+      <section className="mt-20 sm:mt-28">
+        <div data-reveal className="reveal mb-12 max-w-2xl">
+          <p className={LABEL}>Cómo trabajamos</p>
           <h2 className="mt-3 font-serif text-3xl text-cream sm:text-4xl">Cuatro etapas, un mismo criterio</h2>
         </div>
-        <ol className="relative grid gap-10 md:grid-cols-4 md:gap-6">
-          <div className="absolute left-0 right-0 top-3 hidden h-px bg-gold-faint md:block" />
+        <ol className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {HOW.map((h, i) => (
-            <li key={h.n} data-reveal className="reveal relative pt-10 md:pt-12" style={{ transitionDelay: `${i * 120}ms` }}>
-              <span className="absolute left-0 top-0 grid h-6 w-6 place-items-center rounded-full border border-gold bg-ink text-[10px] text-gold">
+            <li
+              key={h.n}
+              data-reveal
+              className={`reveal ${SURFACE} relative p-6 pt-9 sm:p-7 sm:pt-10`}
+              style={{ transitionDelay: `${i * 100}ms` }}
+            >
+              <span className="absolute -top-3 left-6 grid h-7 w-7 place-items-center bg-gold font-serif text-xs text-white">
                 {i + 1}
               </span>
-              <p className="font-serif text-sm text-gold/70">{h.n}</p>
+              <p className="font-serif text-sm text-gold">{h.n}</p>
               <h3 className="mt-2 text-lg text-cream">{h.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-soft">{h.text}</p>
+              <p className="mt-2 text-sm leading-relaxed text-cream/80">{h.text}</p>
             </li>
           ))}
         </ol>
       </section>
 
       {/* Cobertura interactiva */}
-      <section data-reveal className="reveal mt-32 grid gap-12 md:grid-cols-12">
+      <section data-reveal className="reveal mt-20 grid gap-10 sm:mt-28 md:grid-cols-12">
         <div className="md:col-span-4">
-          <p className="text-[11px] uppercase tracking-[0.3em] text-gold">Dónde trabajamos</p>
+          <p className={LABEL}>Dónde trabajamos</p>
           <h2 className="mt-3 font-serif text-3xl text-cream">Orígenes y cobertura</h2>
-          <p className="mt-4 text-sm text-soft">Elegí un origen para ver cómo lo trabajamos.</p>
+          <p className="mt-4 text-sm text-cream/80">Elegí un origen para ver cómo lo trabajamos.</p>
         </div>
         <div className="md:col-span-8">
           <div className="flex flex-wrap gap-2">
@@ -199,65 +194,63 @@ export default function QuienesSomos() {
                 onClick={() => setActiveOrigin(o)}
                 aria-pressed={activeOrigin === o}
                 className={`border px-4 py-2 text-xs uppercase tracking-[0.18em] transition-colors duration-300 ${
-                  activeOrigin === o ? "border-gold bg-gold text-ink" : "border-gold-dim text-cream/70 hover:border-gold hover:text-cream"
+                  activeOrigin === o
+                    ? "border-gold bg-gold text-white"
+                    : "border-gold-faint bg-white text-cream hover:border-gold"
                 }`}
               >
                 {o}
               </button>
             ))}
           </div>
-          <div className="mt-8 border border-gold-faint p-6 sm:p-8">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-gold">Origen: {activeOrigin}</p>
-            <p className="mt-3 text-base leading-relaxed text-cream/85">
+          <div className={`${SURFACE} mt-8 p-6 sm:p-8`}>
+            <p className={LABEL}>Origen: {activeOrigin}</p>
+            <p className="mt-3 text-base leading-relaxed text-cream">
               {activeOrigin === "China" && "Nuestro origen principal. Coordinamos la recepción de tu mercadería directamente con el proveedor, y trabajamos con carga consolidada, contenedor completo y courier aéreo."}
               {activeOrigin === "Brasil" && "Importamos desde Brasil con carga consolidada por kilo o contenedor completo, según el volumen de tu pedido."}
               {activeOrigin === "India" && "Cotizamos envíos desde India bajo pedido, por vía marítima o aérea, según el peso y el plazo que necesites."}
               {activeOrigin === "EE.UU." && "Cotizamos envíos desde Estados Unidos bajo pedido, según el peso, el volumen y la urgencia."}
               {activeOrigin === "Europa" && "Cotizamos envíos desde Europa bajo pedido, con la modalidad que mejor se adapte a tu carga."}
             </p>
-            <p className="mt-6 text-sm text-soft">
-              Entregamos en todo el país desde nuestra base en Córdoba Capital.
-            </p>
+            <p className="mt-6 text-sm text-cream/70">Entregamos en todo el país desde nuestra base en Córdoba Capital.</p>
           </div>
         </div>
       </section>
 
       {/* Equipo */}
-      <section data-reveal className="reveal mt-32">
-        <div className="mb-14 max-w-2xl">
-          <p className="text-[11px] uppercase tracking-[0.3em] text-gold">Equipo</p>
+      <section data-reveal className="reveal mt-20 sm:mt-28">
+        <div className="mb-12 max-w-2xl">
+          <p className={LABEL}>Equipo</p>
           <h2 className="mt-3 font-serif text-3xl text-cream sm:text-4xl">Las personas detrás de cada envío</h2>
         </div>
-        <div className="grid gap-10 sm:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-3">
           {TEAM.map((t) => (
-            <div key={t.name + t.role} className="group">
-              <div className="relative mb-6 aspect-[4/5] overflow-hidden border border-gold-faint bg-ink-2">
-                <div className="absolute inset-0 grid place-items-center">
-                  <span className="font-serif text-5xl text-gold/30 transition group-hover:text-gold/60">
-                    {t.name.split(" ").map((w) => w[0]).join("")}
-                  </span>
-                </div>
+            <div key={t.name + t.role} className={`${SURFACE} p-6`}>
+              <div className="relative mb-6 flex aspect-[4/5] items-center justify-center overflow-hidden border border-gold-faint bg-[#fbf8f1]">
+                <span className="font-serif text-5xl text-gold/50">
+                  {t.name.split(" ").map((w) => w[0]).join("")}
+                </span>
               </div>
               <h3 className="text-lg text-cream">{t.name}</h3>
               <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-gold">{t.role}</p>
-              <p className="mt-3 text-sm leading-relaxed text-soft">{t.bio}</p>
+              <p className="mt-3 text-sm leading-relaxed text-cream/80">{t.bio}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Cierre */}
-      <section data-reveal className="reveal mt-32 border-t border-gold-faint pt-14">
-        <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
+      <section data-reveal className="reveal mt-20 sm:mt-28">
+        <div className={`${SURFACE} flex flex-col items-start justify-between gap-6 p-8 md:flex-row md:items-center md:gap-8 sm:p-10`}>
           <div>
             <p className="font-serif text-2xl text-cream sm:text-3xl">¿Querés conocernos en persona?</p>
-            <p className="mt-2 text-sm text-soft">Pasá por nuestra oficina o escribinos y coordinamos.</p>
+            <p className="mt-2 text-sm text-cream/80">Pasá por nuestra oficina o escribinos y coordinamos.</p>
           </div>
           <div className="flex flex-wrap gap-6 text-sm">
-            <a href={waLink()} target="_blank" rel="noopener" className="text-gold underline-offset-4 hover:underline">
+            <a href={waLink()} target="_blank" rel="noopener" className="font-medium text-gold underline-offset-4 hover:underline">
               Escribinos por WhatsApp
             </a>
-            <Link href="/contacto" className="text-cream/80 underline-offset-4 hover:text-gold hover:underline">
+            <Link href="/contacto" className="text-cream underline-offset-4 hover:text-gold hover:underline">
               Ver contacto
             </Link>
           </div>

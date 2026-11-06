@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ORIGINS, SITE, waLink } from "@/lib/site";
 
 type ModeId = "fcl" | "lcl" | "courier";
@@ -110,26 +110,27 @@ const FAQS = [
   { q: "¿Cubren todo el país?", a: "Sí. Entregamos en todo el país desde Córdoba, hasta tu comercio o depósito." },
 ];
 
-// Clases base: padding menor en celular, normal desde sm
-const CARD = "border border-gold-dim bg-ink-2 p-5 sm:p-8 shadow-[0_18px_50px_-28px_rgba(0,0,0,.9)]";
-const CARD_HOVER = "transition duration-300 hover:-translate-y-1 hover:border-gold hover:shadow-[0_24px_60px_-28px_rgba(212,178,110,.35)]";
-const LABEL = "text-[11px] font-medium uppercase tracking-[0.25em] text-gold";
-const TITLE = "mt-3 font-serif text-2xl leading-tight text-cream sm:text-3xl";
+const EASE = "ease-[cubic-bezier(.22,1,.36,1)]";
+const LABEL = "text-[11px] font-medium uppercase tracking-[0.28em] text-gold";
+const H2 = "mt-4 font-serif text-2xl leading-tight text-cream sm:text-4xl";
+const RULE = "border-t border-gold-faint";
+const SECTION = "mt-20 sm:mt-28";
+const SURFACE = "bg-white rounded-sm shadow-[0_12px_30px_-18px_rgba(70,50,20,.3)] ring-1 ring-gold-faint";
 
 function Illustration({ id }: { id: ModeId }) {
   if (id === "fcl") {
     return (
-      <svg viewBox="0 0 400 240" className="h-full w-full" aria-hidden="true">
-        <rect x="40" y="80" width="320" height="110" rx="3" fill="none" stroke="#d4b26e" strokeWidth="2" className="draw" />
+      <svg viewBox="0 0 400 240" className="block h-full w-full" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <rect x="40" y="80" width="320" height="110" rx="3" fill="none" stroke="#8c6428" strokeWidth="2" className="draw" />
         {Array.from({ length: 15 }).map((_, i) => (
-          <line key={i} x1={60 + i * 20} y1="86" x2={60 + i * 20} y2="184" stroke="#d4b26e" strokeOpacity=".22" />
+          <line key={i} x1={60 + i * 20} y1="86" x2={60 + i * 20} y2="184" stroke="#8c6428" strokeOpacity=".2" />
         ))}
-        <rect x="150" y="112" width="100" height="44" fill="#d4b26e" fillOpacity=".15" stroke="#d4b26e" strokeOpacity=".7" />
-        <text x="200" y="139" textAnchor="middle" fill="#fffaf0" fontFamily="Lora, serif" fontSize="14">
+        <rect x="150" y="112" width="100" height="44" fill="#8c6428" fillOpacity=".1" stroke="#8c6428" strokeOpacity=".7" />
+        <text x="200" y="139" textAnchor="middle" fill="#1c1812" fontFamily="Lora, serif" fontSize="14">
           40&apos; · FCL
         </text>
-        <line x1="20" y1="206" x2="380" y2="206" stroke="#3a3120" strokeWidth="2" />
-        <line x1="20" y1="206" x2="380" y2="206" stroke="#d4b26e" strokeWidth="2" strokeDasharray="14 18" className="road" />
+        <line x1="20" y1="206" x2="380" y2="206" stroke="#e4d9c1" strokeWidth="2" />
+        <line x1="20" y1="206" x2="380" y2="206" stroke="#8c6428" strokeWidth="2" strokeDasharray="14 18" className="road" />
       </svg>
     );
   }
@@ -140,8 +141,8 @@ function Illustration({ id }: { id: ModeId }) {
       [120, 164], [170, 164], [220, 164],
     ];
     return (
-      <svg viewBox="0 0 400 240" className="h-full w-full" aria-hidden="true">
-        <rect x="40" y="30" width="320" height="180" rx="3" fill="none" stroke="#d4b26e" strokeWidth="2" className="draw" />
+      <svg viewBox="0 0 400 240" className="block h-full w-full" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <rect x="40" y="30" width="320" height="180" rx="3" fill="none" stroke="#8c6428" strokeWidth="2" className="draw" />
         {boxes.map(([x, y], i) => (
           <rect
             key={i}
@@ -149,29 +150,29 @@ function Illustration({ id }: { id: ModeId }) {
             y={y}
             width="38"
             height="38"
-            fill="#d4b26e"
-            fillOpacity={i % 3 === 0 ? 0.6 : 0.32}
-            stroke="#d4b26e"
-            strokeOpacity=".8"
+            fill="#8c6428"
+            fillOpacity={i % 3 === 0 ? 0.45 : 0.22}
+            stroke="#8c6428"
+            strokeOpacity=".7"
             className="drop"
             style={{ animationDelay: `${i * 0.12}s` }}
           />
         ))}
-        <text x="200" y="230" textAnchor="middle" fill="#d6cab0" fontFamily="Poppins, sans-serif" fontSize="11" letterSpacing="3">
+        <text x="200" y="230" textAnchor="middle" fill="#5e5444" fontFamily="Poppins, sans-serif" fontSize="11" letterSpacing="3">
           VARIOS IMPORTADORES
         </text>
       </svg>
     );
   }
   return (
-    <svg viewBox="0 0 400 240" className="h-full w-full" aria-hidden="true">
-      <path id="arc" d="M50 170 Q200 20 350 170" fill="none" stroke="#d4b26e" strokeOpacity=".45" strokeWidth="1.5" strokeDasharray="5 7" />
-      <circle cx="50" cy="170" r="5" fill="#d4b26e" />
-      <circle cx="350" cy="170" r="5" fill="#d4b26e" />
-      <text x="50" y="200" textAnchor="middle" fill="#d6cab0" fontFamily="Poppins, sans-serif" fontSize="10" letterSpacing="2">ORIGEN</text>
-      <text x="350" y="200" textAnchor="middle" fill="#d6cab0" fontFamily="Poppins, sans-serif" fontSize="10" letterSpacing="2">TU PUERTA</text>
+    <svg viewBox="0 0 400 240" className="block h-full w-full" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <path id="arc" d="M50 170 Q200 20 350 170" fill="none" stroke="#8c6428" strokeOpacity=".4" strokeWidth="1.5" strokeDasharray="5 7" />
+      <circle cx="50" cy="170" r="5" fill="#8c6428" />
+      <circle cx="350" cy="170" r="5" fill="#8c6428" />
+      <text x="50" y="200" textAnchor="middle" fill="#5e5444" fontFamily="Poppins, sans-serif" fontSize="10" letterSpacing="2">ORIGEN</text>
+      <text x="350" y="200" textAnchor="middle" fill="#5e5444" fontFamily="Poppins, sans-serif" fontSize="10" letterSpacing="2">TU PUERTA</text>
       <g>
-        <path d="M-12 0 L4 -7 L14 0 L4 7 Z M-4 0 L-14 -9 L-10 0 L-14 9 Z" fill="#f0d690" />
+        <path d="M-12 0 L4 -7 L14 0 L4 7 Z M-4 0 L-14 -9 L-10 0 L-14 9 Z" fill="#8c6428" />
         <animateMotion dur="5s" repeatCount="indefinite" rotate="auto">
           <mpath href="#arc" />
         </animateMotion>
@@ -183,12 +184,12 @@ function Illustration({ id }: { id: ModeId }) {
 function Bar({ label, value, delay }: { label: string; value: number; delay: number }) {
   return (
     <div>
-      <div className="mb-2 flex justify-between text-[11px] uppercase tracking-[0.2em] text-soft">
+      <div className="mb-2 flex justify-between text-[11px] uppercase tracking-[0.22em] text-soft">
         <span>{label}</span>
         <span className="tabular-nums text-cream">{value}%</span>
       </div>
-      <div className="h-[3px] w-full rounded-full bg-gold-faint">
-        <div className="bar-fill h-[3px] origin-left rounded-full bg-gold" style={{ width: `${value}%`, animationDelay: `${delay}ms` }} />
+      <div className="h-px w-full bg-gold-faint">
+        <div className="bar-fill h-px origin-left bg-gold" style={{ width: `${value}%`, animationDelay: `${delay}ms` }} />
       </div>
     </div>
   );
@@ -199,23 +200,21 @@ function Estimator({ mode }: { mode: Mode }) {
 
   if (mode.id !== "lcl") {
     return (
-      <div className="border border-gold-dim bg-ink p-5 sm:p-6">
-        <p className={LABEL}>Costo</p>
-        <p className="mt-3 text-sm leading-relaxed text-cream/90">
-          {mode.id === "fcl"
-            ? "El costo depende del tamaño del contenedor, el origen y la ruta. Te lo cotizamos según tu caso."
-            : "El costo depende del peso, las dimensiones y el origen. Te lo cotizamos según tu caso."}
-        </p>
-      </div>
+      <p className="text-sm leading-relaxed text-cream/85">
+        {mode.id === "fcl"
+          ? "El costo depende del tamaño del contenedor, el origen y la ruta. Te lo cotizamos según tu caso."
+          : "El costo depende del peso, las dimensiones y el origen. Te lo cotizamos según tu caso."}
+      </p>
     );
   }
 
   return (
-    <div className="border border-gold-dim bg-ink p-5 sm:p-6">
-      <p className={LABEL}>Estimación rápida</p>
-      <div className="mt-4 flex items-baseline gap-2">
-        <span className="font-serif text-3xl text-cream">{kg.toLocaleString("es-AR")}</span>
-        <span className="text-sm text-soft">kg</span>
+    <div>
+      <div className="flex items-baseline justify-between gap-4">
+        <p className={LABEL}>Estimación rápida</p>
+        <p className="font-serif text-2xl tabular-nums text-cream">
+          {kg.toLocaleString("es-AR")} <span className="font-sans text-sm text-soft">kg</span>
+        </p>
       </div>
       <input
         type="range"
@@ -225,14 +224,12 @@ function Estimator({ mode }: { mode: Mode }) {
         value={kg}
         onChange={(e) => setKg(Number(e.target.value))}
         aria-label="Peso estimado en kilos"
-        className="mt-4 w-full accent-[#d4b26e]"
+        className="mt-5 w-full accent-[#8c6428]"
       />
-      <div className="mt-5 border-t border-gold-dim pt-4">
-        <p className="font-serif text-2xl text-gold">USD {(kg * SITE.pricePerKg).toLocaleString("es-AR")}</p>
-        <p className="mt-2 text-xs leading-relaxed text-soft">
-          Referencia de {SITE.pricePerKg} USD por kilo, sin impuestos ni gastos de aduana.
-        </p>
-      </div>
+      <p className="mt-5 font-serif text-3xl text-gold">USD {(kg * SITE.pricePerKg).toLocaleString("es-AR")}</p>
+      <p className="mt-2 text-xs leading-relaxed text-soft">
+        Referencia de {SITE.pricePerKg} USD por kilo, sin impuestos ni gastos de aduana.
+      </p>
     </div>
   );
 }
@@ -253,46 +250,50 @@ function Quiz({ onPick }: { onPick: (id: ModeId) => void }) {
       : "lcl"
     : null;
 
-  const opt = "w-full border px-4 py-3 text-left text-sm transition-colors duration-300";
-  const on = "border-gold bg-gold/15 text-gold";
-  const off = "border-gold-dim bg-ink text-cream hover:border-gold";
+  const opt = `relative pb-2 text-left text-sm transition-colors duration-500 ${EASE}`;
 
   return (
-    <div className={`${CARD} grid gap-8 md:grid-cols-12 md:gap-10`}>
-      <div className="md:col-span-5">
+    <div className="grid gap-10 md:grid-cols-12">
+      <div className="md:col-span-4">
         <p className={LABEL}>Asistente</p>
-        <h2 className={TITLE}>¿Cuál te conviene?</h2>
-        <p className="mt-4 text-sm leading-relaxed text-cream/85">
+        <h2 className={H2}>¿Cuál te conviene?</h2>
+        <p className="mt-4 text-sm leading-relaxed text-cream/80">
           Respondé dos preguntas y te sugerimos la modalidad que mejor encaja con tu importación.
         </p>
       </div>
 
-      <div className="space-y-6 md:col-span-7 md:space-y-8">
+      <div className="min-w-0 space-y-10 md:col-span-8">
         <div>
-          <p className="mb-3 text-sm text-cream">1. ¿Cuánta mercadería traés?</p>
-          <div className="grid gap-2 sm:grid-cols-3">
+          <p className="mb-4 text-sm text-cream">1. ¿Cuánta mercadería traés?</p>
+          <div className="flex flex-wrap gap-x-8 gap-y-3">
             {[
               { v: "poca", l: "Menos de 100 kg" },
               { v: "media", l: "Entre 100 y 1.000 kg" },
               { v: "mucha", l: "Un contenedor o más" },
             ].map((o) => (
-              <button key={o.v} onClick={() => { setQ1(o.v); setQ2(null); }} className={`${opt} ${q1 === o.v ? on : off}`}>
+              <button
+                key={o.v}
+                onClick={() => { setQ1(o.v); setQ2(null); }}
+                className={`${opt} ${q1 === o.v ? "text-gold" : "text-cream/65 hover:text-cream"}`}
+              >
                 {o.l}
+                <span className={`absolute inset-x-0 bottom-0 h-px origin-left bg-gold transition-transform duration-700 ${EASE} ${q1 === o.v ? "scale-x-100" : "scale-x-0"}`} />
               </button>
             ))}
           </div>
         </div>
 
         {q1 === "poca" && (
-          <div className="animate-[fadeUp_.6s_ease_both]">
-            <p className="mb-3 text-sm text-cream">2. ¿Qué tan urgente es?</p>
-            <div className="grid gap-2 sm:grid-cols-2">
+          <div className="rise">
+            <p className="mb-4 text-sm text-cream">2. ¿Qué tan urgente es?</p>
+            <div className="flex flex-wrap gap-x-8 gap-y-3">
               {[
                 { v: "urgente", l: "La necesito en pocos días" },
                 { v: "normal", l: "Puedo esperar" },
               ].map((o) => (
-                <button key={o.v} onClick={() => setQ2(o.v)} className={`${opt} ${q2 === o.v ? on : off}`}>
+                <button key={o.v} onClick={() => setQ2(o.v)} className={`${opt} ${q2 === o.v ? "text-gold" : "text-cream/65 hover:text-cream"}`}>
                   {o.l}
+                  <span className={`absolute inset-x-0 bottom-0 h-px origin-left bg-gold transition-transform duration-700 ${EASE} ${q2 === o.v ? "scale-x-100" : "scale-x-0"}`} />
                 </button>
               ))}
             </div>
@@ -300,11 +301,11 @@ function Quiz({ onPick }: { onPick: (id: ModeId) => void }) {
         )}
 
         {result && (
-          <div className="animate-[fadeUp_.6s_ease_both] border border-gold bg-gold/10 p-5 sm:p-6">
+          <div className={`rise ${RULE} pt-6`}>
             <p className={LABEL}>Te recomendamos</p>
-            <p className="mt-2 font-serif text-2xl text-cream">{MODES.find((m) => m.id === result)?.name}</p>
-            <p className="mt-2 text-sm text-cream/85">{MODES.find((m) => m.id === result)?.tagline}</p>
-            <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm">
+            <p className="mt-3 font-serif text-3xl text-cream">{MODES.find((m) => m.id === result)?.name}</p>
+            <p className="mt-2 text-sm text-cream/75">{MODES.find((m) => m.id === result)?.tagline}</p>
+            <div className="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-sm">
               <button
                 onClick={() => {
                   onPick(result);
@@ -316,7 +317,7 @@ function Quiz({ onPick }: { onPick: (id: ModeId) => void }) {
               </button>
               <button
                 onClick={() => { setQ1(null); setQ2(null); }}
-                className="text-cream/70 underline-offset-4 hover:text-cream hover:underline"
+                className="text-cream/65 underline-offset-4 hover:text-cream hover:underline"
               >
                 Empezar de nuevo
               </button>
@@ -334,8 +335,21 @@ export default function ServiciosShowcase() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [openOrigin, setOpenOrigin] = useState<string | null>(null);
 
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [ind, setInd] = useState({ x: 0, w: 0 });
+
   useEffect(() => {
-    const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    const measure = () => {
+      const el = tabRefs.current[active];
+      if (el) setInd({ x: el.offsetLeft, w: el.offsetWidth });
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [active]);
+
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)");
     const io = new IntersectionObserver(
       (entries) =>
         entries.forEach((e) => {
@@ -344,11 +358,11 @@ export default function ServiciosShowcase() {
             io.unobserve(e.target);
           }
         }),
-      { threshold: 0.12 }
+      { threshold: 0.15 }
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, [active]);
 
   useEffect(() => {
     const order: ModeId[] = ["fcl", "lcl", "courier"];
@@ -365,104 +379,102 @@ export default function ServiciosShowcase() {
   return (
     <>
       {/* Asistente */}
-      <section data-reveal className="reveal mt-16 sm:mt-20">
+      <section data-reveal className="reveal mt-14 sm:mt-24">
         <Quiz onPick={(id) => setActive(id)} />
       </section>
 
       {/* Selector de modalidad */}
-      <section data-reveal className="reveal mt-16 sm:mt-20">
-        <p className={`${LABEL} mb-5 sm:mb-6`}>Elegí una modalidad</p>
-        <div role="tablist" aria-label="Modalidades" className="grid grid-cols-3 gap-2 sm:gap-4">
+      <section data-reveal className="reveal mt-16 sm:mt-24">
+        <p className={LABEL}>Elegí una modalidad</p>
+        <div className="relative mt-6 flex gap-8 overflow-x-auto pb-4 sm:gap-14" role="tablist" aria-label="Modalidades">
           {MODES.map((m) => {
             const selected = m.id === active;
             return (
               <button
                 key={m.id}
+                ref={(el) => {
+                  tabRefs.current[m.id] = el;
+                }}
                 role="tab"
                 aria-selected={selected}
                 onClick={() => setActive(m.id)}
-                className={`group relative border p-3 text-left transition duration-300 sm:p-6 ${
-                  selected
-                    ? "border-gold bg-gold/10 shadow-[0_20px_50px_-25px_rgba(212,178,110,.5)]"
-                    : "border-gold-dim bg-ink-2 hover:-translate-y-1 hover:border-gold"
+                className={`shrink-0 pb-3 text-left transition-colors duration-500 ${EASE} ${
+                  selected ? "text-gold" : "text-cream/50 hover:text-cream"
                 }`}
               >
-                <span className={`block font-serif text-base leading-none sm:text-3xl ${selected ? "text-gold" : "text-cream"}`}>
-                  {m.code}
-                </span>
-                <span className="mt-2 hidden text-sm text-cream sm:block">{m.name}</span>
-                <span className="mt-1 hidden text-xs text-soft sm:block">{m.tagline}</span>
-                <span
-                  className={`absolute inset-x-3 bottom-0 h-[2px] origin-center rounded-full bg-gold transition-transform duration-500 sm:inset-x-6 ${
-                    selected ? "scale-x-100" : "scale-x-0"
-                  }`}
-                />
+                <span className="block font-serif text-3xl leading-none sm:text-5xl">{m.code}</span>
+                <span className="mt-2 block text-[11px] uppercase tracking-[0.2em] sm:text-xs">{m.name}</span>
               </button>
             );
           })}
+          <span
+            className={`absolute bottom-0 h-[2px] bg-gold transition-all duration-700 ${EASE}`}
+            style={{ transform: `translateX(${ind.x}px)`, width: ind.w }}
+          />
         </div>
-        <p className="mt-3 text-center text-[11px] text-soft sm:hidden">{mode.name}</p>
       </section>
 
-      {/* Panel principal */}
-      <section id="panel-modo" role="tabpanel" className="mt-8 sm:mt-10">
-                <div key={mode.id} className="panel-enter grid min-w-0 grid-cols-1 items-stretch gap-6 md:grid-cols-2">
-          <div className={`${CARD} relative flex min-w-0 aspect-[4/3] items-center justify-center p-4 sm:aspect-[5/3] sm:p-6`}>
-            <Illustration id={mode.id} />
-          </div>
-
-          <div className={`${CARD} min-w-0`}>
-            <p className="font-serif text-3xl text-gold sm:text-4xl">{mode.code}</p>
-            <h2 className="mt-2 text-lg text-cream sm:text-2xl">{mode.name}</h2>
-            <p className="mt-1 text-sm italic text-gold">{mode.tagline}</p>
-            <p className="mt-4 text-sm leading-relaxed text-cream/90 sm:mt-5 sm:text-base">{mode.text}</p>
-
-            <div className="mt-6 space-y-4 sm:mt-8 sm:space-y-5">
+      {/* Panel principal: columnas de ancho fijo, nada se superpone */}
+      <section id="panel-modo" role="tabpanel" className="mt-12 w-full min-w-0 sm:mt-16">
+        <div
+          key={mode.id}
+          className="rise grid w-full min-w-0 grid-cols-1 gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:gap-16"
+        >
+          <div className="min-w-0">
+            <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[5/3]">
+              <Illustration id={mode.id} />
+            </div>
+            <div className="mt-8 space-y-5">
               <Bar label="Volumen ideal" value={mode.bars.volumen} delay={100} />
               <Bar label="Economía por kilo" value={mode.bars.economia} delay={200} />
               <Bar label="Velocidad" value={mode.bars.velocidad} delay={300} />
             </div>
+          </div>
 
-            <div className="mt-6 sm:mt-8">
+          <div className="min-w-0">
+            <p className="font-serif text-6xl leading-none text-gold sm:text-7xl">{mode.code}</p>
+            <h2 className="mt-4 font-serif text-2xl text-cream sm:text-3xl">{mode.name}</h2>
+            <p className="mt-2 text-sm italic text-gold">{mode.tagline}</p>
+            <p className="mt-6 text-base leading-relaxed text-cream/85">{mode.text}</p>
+
+            <div className={`${RULE} mt-10 pt-8`}>
               <Estimator mode={mode} />
             </div>
           </div>
         </div>
 
         {/* Qué incluye / para quién */}
-        <div key={mode.id + "-info"} className="panel-enter mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          <div className={CARD}>
-            <p className={`${LABEL} mb-5`}>Qué incluye</p>
-            <ul className="space-y-4">
+        <div key={mode.id + "-info"} className={`rise ${SECTION} grid gap-12 md:grid-cols-3 md:gap-0`}>
+          <div className="md:pr-10">
+            <p className={LABEL}>Qué incluye</p>
+            <ul className="mt-6 space-y-4">
               {mode.incluye.map((p, i) => (
-                <li key={p} className="point-in flex gap-3 text-sm text-cream" style={{ animationDelay: `${120 + i * 80}ms` }}>
-                  <svg viewBox="0 0 16 16" className="mt-[5px] h-3 w-3 shrink-0" aria-hidden="true">
-                    <path d="M2 8.5 L6 12 L14 4" fill="none" stroke="#f2cf7e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" pathLength={1} className="check" style={{ animationDelay: `${120 + i * 80}ms` }} />
-                  </svg>
+                <li key={p} className="point-in flex gap-4 text-sm text-cream" style={{ animationDelay: `${120 + i * 80}ms` }}>
+                  <span className="mt-[9px] h-px w-4 shrink-0 bg-gold" />
                   <span>{p}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className={CARD}>
-            <p className={`${LABEL} mb-5`}>Conviene si</p>
-            <ul className="space-y-3 text-sm text-cream">
+          <div className="md:border-l md:border-gold-faint md:px-10">
+            <p className={LABEL}>Conviene si</p>
+            <ul className="mt-6 space-y-4 text-sm text-cream">
               {mode.ideal.map((p) => (
-                <li key={p} className="flex gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
+                <li key={p} className="flex gap-4">
+                  <span className="mt-[9px] h-px w-4 shrink-0 bg-gold" />
                   <span>{p}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className={`${CARD} sm:col-span-2 xl:col-span-1`}>
-            <p className="mb-5 text-[11px] font-medium uppercase tracking-[0.25em] text-soft">Mejor evitarla si</p>
-            <ul className="space-y-3 text-sm text-cream/85">
+          <div className="md:border-l md:border-gold-faint md:pl-10">
+            <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-soft">Mejor evitarla si</p>
+            <ul className="mt-6 space-y-4 text-sm text-cream/75">
               {mode.noIdeal.map((p) => (
-                <li key={p} className="flex gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-soft" />
+                <li key={p} className="flex gap-4">
+                  <span className="mt-[9px] h-px w-4 shrink-0 bg-soft" />
                   <span>{p}</span>
                 </li>
               ))}
@@ -471,40 +483,44 @@ export default function ServiciosShowcase() {
         </div>
 
         {/* Proceso */}
-        <div key={mode.id + "-steps"} className="panel-enter mt-16 sm:mt-20">
+        <div key={mode.id + "-steps"} className={`rise ${SECTION}`}>
           <p className={LABEL}>Cómo funciona</p>
-          <h3 className={TITLE}>El proceso, paso a paso</h3>
-          <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <h3 className={H2}>El proceso, paso a paso</h3>
+          <ol className="mt-10 grid gap-6 md:grid-cols-3">
             {mode.steps.map((s, i) => (
               <li
                 key={s}
                 data-reveal
-                className={`reveal ${CARD} ${CARD_HOVER} relative pt-8`}
-                style={{ transitionDelay: `${i * 80}ms` }}
+                className={`reveal ${SURFACE} relative p-6 pt-8`}
+                style={{ transitionDelay: `${i * 90}ms` }}
               >
-                <span className="absolute -top-3 left-5 grid h-7 w-7 place-items-center bg-gold font-serif text-xs text-ink sm:left-6">
-                  {i + 1}
-                </span>
-                <p className="text-sm leading-relaxed text-cream">{s}</p>
+                <span className="absolute -top-[5px] left-6 h-2.5 w-2.5 rounded-full bg-gold" />
+                <p className="font-serif text-lg text-gold">0{i + 1}</p>
+                <p className="mt-2 text-sm leading-relaxed text-cream">{s}</p>
               </li>
             ))}
           </ol>
         </div>
 
         {/* Documentación */}
-        <div key={mode.id + "-docs"} className="panel-enter mt-16 sm:mt-20">
-          <p className={LABEL}>Documentación</p>
-          <h3 className="mt-3 font-serif text-xl text-cream sm:text-2xl">Lo que suele pedirse</h3>
-          <p className="mt-3 text-sm text-cream/80">La lista exacta depende de tu producto y de tu proveedor. Te la confirmamos al cotizar.</p>
-          <ul className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4">
-            {mode.docs.map((d) => (
-              <li key={d} className={`${CARD} ${CARD_HOVER} flex items-center gap-4 p-4 sm:p-5`}>
-                <span className="grid h-8 w-8 shrink-0 place-items-center border border-gold text-gold">
-                  <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden="true">
-                    <path d="M3 8.5 L6.5 12 L13 4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
+        <div key={mode.id + "-docs"} className={`rise ${SECTION} grid gap-10 md:grid-cols-12`}>
+          <div className="md:col-span-4">
+            <p className={LABEL}>Documentación</p>
+            <h3 className="mt-4 font-serif text-xl text-cream sm:text-2xl">Lo que suele pedirse</h3>
+            <p className="mt-3 text-sm leading-relaxed text-cream/75">
+              La lista exacta depende de tu producto y de tu proveedor. Te la confirmamos al cotizar.
+            </p>
+          </div>
+          <ul className="space-y-3 md:col-span-8">
+            {mode.docs.map((d, i) => (
+              <li
+                key={d}
+                data-reveal
+                className={`reveal ${SURFACE} flex items-center justify-between gap-6 px-6 py-5`}
+                style={{ transitionDelay: `${i * 70}ms` }}
+              >
                 <span className="text-sm text-cream">{d}</span>
+                <span className="font-serif text-sm text-gold/80">0{i + 1}</span>
               </li>
             ))}
           </ul>
@@ -512,111 +528,109 @@ export default function ServiciosShowcase() {
       </section>
 
       {/* Comparativa */}
-      <section data-reveal className="reveal mt-20 sm:mt-24">
-        <div className={CARD}>
-          <p className={LABEL}>Comparativa</p>
-          <h2 className={TITLE}>Las tres modalidades, lado a lado</h2>
-          <p className="mt-2 text-[11px] text-soft sm:hidden">Deslizá la tabla para ver todo →</p>
-          <div className="mt-6 -mx-5 overflow-x-auto px-5 sm:mx-0 sm:mt-10 sm:px-0">
-            <table className="w-full min-w-[520px] border-collapse text-left text-sm">
-              <thead>
-                <tr className="border-b border-gold text-[11px] uppercase tracking-[0.2em] text-gold">
-                  <th className="py-4 pr-4 font-normal text-soft">&nbsp;</th>
-                  <th className="py-4 pr-4 font-serif text-base font-normal text-cream">FCL</th>
-                  <th className="py-4 pr-4 font-serif text-base font-normal text-cream">LCL</th>
-                  <th className="py-4 font-serif text-base font-normal text-cream">Courier</th>
+      <section data-reveal className={`reveal ${SECTION}`}>
+        <p className={LABEL}>Comparativa</p>
+        <h2 className={H2}>Las tres modalidades, lado a lado</h2>
+        <p className="mt-2 text-[11px] text-soft sm:hidden">Deslizá la tabla para ver todo →</p>
+        <div className={`${SURFACE} mt-10 overflow-x-auto p-4 sm:p-8`}>
+          <table className="w-full min-w-[520px] border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b border-gold text-[11px] uppercase tracking-[0.22em] text-gold">
+                <th className="py-4 pr-4 font-normal text-soft">&nbsp;</th>
+                <th className="py-4 pr-4 font-serif text-base font-normal normal-case tracking-normal text-cream">FCL</th>
+                <th className="py-4 pr-4 font-serif text-base font-normal normal-case tracking-normal text-cream">LCL</th>
+                <th className="py-4 font-serif text-base font-normal normal-case tracking-normal text-cream">Courier</th>
+              </tr>
+            </thead>
+            <tbody className="text-cream">
+              {[
+                ["Cobro", "Por contenedor", "Por kilo o m³", "Por peso"],
+                ["Ideal para", "Cargas grandes", "Cargas medianas", "Cargas livianas"],
+                ["Compartís contenedor", "No", "Sí", "No aplica"],
+                ["Velocidad", "Media", "Media", "Alta"],
+                ["Cotización", "Según contenedor", "Según kilos", "Según peso"],
+              ].map((row) => (
+                <tr key={row[0]} className="border-b border-gold-faint">
+                  <td className="py-5 pr-4 text-soft">{row[0]}</td>
+                  <td className="py-5 pr-4">{row[1]}</td>
+                  <td className="py-5 pr-4">{row[2]}</td>
+                  <td className="py-5">{row[3]}</td>
                 </tr>
-              </thead>
-              <tbody className="text-cream">
-                {[
-                  ["Cobro", "Por contenedor", "Por kilo o m³", "Por peso"],
-                  ["Ideal para", "Cargas grandes", "Cargas medianas", "Cargas livianas"],
-                  ["Compartís contenedor", "No", "Sí", "No aplica"],
-                  ["Velocidad", "Media", "Media", "Alta"],
-                  ["Cotización", "Según contenedor", "Según kilos", "Según peso"],
-                ].map((row) => (
-                  <tr key={row[0]} className="border-b border-gold-dim">
-                    <td className="py-4 pr-4 text-soft">{row[0]}</td>
-                    <td className="py-4 pr-4">{row[1]}</td>
-                    <td className="py-4 pr-4">{row[2]}</td>
-                    <td className="py-4">{row[3]}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 
-      {/* Orígenes */}
-      <section data-reveal className="reveal mt-20 sm:mt-24">
-        <p className={LABEL}>Orígenes</p>
-        <h2 className={TITLE.replace("text-2xl", "text-xl").replace("sm:text-3xl", "sm:text-3xl")}>Desde dónde importamos</h2>
-        <p className="mt-3 text-sm text-cream/80">Tocá un origen para ver qué modalidades trabajamos desde allí.</p>
-        <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {ORIGINS.map((o) => {
-            const open = openOrigin === o;
-            const info = ORIGIN_INFO[o];
-            return (
-              <li key={o} className={`${CARD} p-0 ${open ? "border-gold" : ""}`}>
-                <button
-                  onClick={() => setOpenOrigin(open ? null : o)}
-                  aria-expanded={open}
-                  className="flex w-full items-center justify-between p-5 text-left transition hover:text-gold sm:p-6"
-                >
-                  <span className="font-serif text-lg text-cream sm:text-xl">{o}</span>
-                  <span className={`text-xl text-gold transition-transform duration-300 ${open ? "rotate-45" : ""}`}>+</span>
-                </button>
-                <div className={`grid transition-all duration-500 ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
-                  <div className="overflow-hidden">
-                    <div className="px-5 pb-5 sm:px-6 sm:pb-6">
-                      <p className={LABEL}>{info?.modes}</p>
-                      <p className="mt-3 text-sm leading-relaxed text-cream/90">{info?.note}</p>
+      {/* Orígenes y preguntas */}
+      <section data-reveal className={`reveal ${SECTION} grid gap-16 md:grid-cols-2 md:gap-20`}>
+        <div className="min-w-0">
+          <p className={LABEL}>Orígenes</p>
+          <h2 className={H2}>Desde dónde importamos</h2>
+          <ul className="mt-10">
+            {ORIGINS.map((o) => {
+              const open = openOrigin === o;
+              const info = ORIGIN_INFO[o];
+              return (
+                <li key={o} className={RULE}>
+                  <button
+                    onClick={() => setOpenOrigin(open ? null : o)}
+                    aria-expanded={open}
+                    className="flex w-full items-center justify-between py-5 text-left transition-colors duration-500 hover:text-gold"
+                  >
+                    <span className="font-serif text-xl text-cream">{o}</span>
+                    <span className={`text-lg text-gold transition-transform duration-700 ${EASE} ${open ? "rotate-45" : ""}`}>+</span>
+                  </button>
+                  <div className={`grid transition-[grid-template-rows,opacity] duration-700 ${EASE} ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                    <div className="overflow-hidden">
+                      <p className={`${LABEL} pb-2`}>{info?.modes}</p>
+                      <p className="pb-6 text-sm leading-relaxed text-cream/80">{info?.note}</p>
                     </div>
                   </div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
+                </li>
+              );
+            })}
+            <li className={RULE} />
+          </ul>
+        </div>
 
-      {/* Preguntas */}
-      <section data-reveal className="reveal mt-20 sm:mt-24">
-        <p className={LABEL}>Preguntas frecuentes</p>
-        <h2 className="mt-3 font-serif text-xl text-cream sm:text-3xl">Lo que más nos preguntan</h2>
-        <ul className="mt-8 grid gap-4 md:grid-cols-2">
-          {FAQS.map((f, i) => {
-            const open = openFaq === i;
-            return (
-              <li key={f.q} className={`${CARD} p-0 ${open ? "border-gold" : ""}`}>
-                <button
-                  onClick={() => setOpenFaq(open ? null : i)}
-                  aria-expanded={open}
-                  className="flex w-full items-center justify-between gap-4 p-5 text-left transition hover:text-gold sm:gap-6 sm:p-6"
-                >
-                  <span className="text-sm text-cream sm:text-base">{f.q}</span>
-                  <span className={`shrink-0 text-xl text-gold transition-transform duration-300 ${open ? "rotate-45" : ""}`}>+</span>
-                </button>
-                <div className={`grid transition-all duration-500 ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
-                  <div className="overflow-hidden">
-                    <p className="px-5 pb-5 text-sm leading-relaxed text-cream/90 sm:px-6 sm:pb-6">{f.a}</p>
+        <div className="min-w-0">
+          <p className={LABEL}>Preguntas frecuentes</p>
+          <h2 className={H2}>Lo que más nos preguntan</h2>
+          <ul className="mt-10">
+            {FAQS.map((f, i) => {
+              const open = openFaq === i;
+              return (
+                <li key={f.q} className={RULE}>
+                  <button
+                    onClick={() => setOpenFaq(open ? null : i)}
+                    aria-expanded={open}
+                    className="flex w-full items-center justify-between gap-6 py-5 text-left transition-colors duration-500 hover:text-gold"
+                  >
+                    <span className="text-sm text-cream sm:text-base">{f.q}</span>
+                    <span className={`shrink-0 text-lg text-gold transition-transform duration-700 ${EASE} ${open ? "rotate-45" : ""}`}>+</span>
+                  </button>
+                  <div className={`grid transition-[grid-template-rows,opacity] duration-700 ${EASE} ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                    <div className="overflow-hidden">
+                      <p className="pb-6 text-sm leading-relaxed text-cream/80">{f.a}</p>
+                    </div>
                   </div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+                </li>
+              );
+            })}
+            <li className={RULE} />
+          </ul>
+        </div>
       </section>
 
       {/* Cierre */}
-      <section data-reveal className="reveal mt-20 sm:mt-24">
-        <div className={`${CARD} flex flex-col gap-6 md:flex-row md:items-center md:justify-between md:gap-8`}>
+      <section data-reveal className={`reveal ${SECTION} pb-4`}>
+        <div className={`${RULE} flex flex-col gap-8 pt-14 md:flex-row md:items-end md:justify-between`}>
           <div>
-            <p className="font-serif text-xl text-cream sm:text-3xl">¿Tenés una importación en mente?</p>
-            <p className="mt-2 text-sm text-cream/85">Contanos qué querés traer y te pasamos una cotización sin compromiso.</p>
+            <p className="font-serif text-2xl text-cream sm:text-4xl">¿Tenés una importación en mente?</p>
+            <p className="mt-3 text-sm text-cream/75">Contanos qué querés traer y te pasamos una cotización sin compromiso.</p>
           </div>
-          <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
+          <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
             <a href={waLink()} target="_blank" rel="noopener" className="font-medium text-gold underline-offset-4 hover:underline">
               Cotizar por WhatsApp
             </a>
@@ -628,34 +642,42 @@ export default function ServiciosShowcase() {
       </section>
 
       <style>{`
-        .reveal { opacity: 0; transform: translateY(24px); transition: opacity .9s ease, transform .9s cubic-bezier(.2,.8,.2,1); }
+        .reveal {
+          opacity: 0;
+          transform: translateY(18px);
+          transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1);
+        }
         .reveal.is-in { opacity: 1; transform: none; }
 
-        .panel-enter { animation: panel-in .7s cubic-bezier(.2,.8,.2,1) both; }
-        @keyframes panel-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+        .rise { animation: rise .8s cubic-bezier(.22,1,.36,1) both; }
+        @keyframes rise {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: none; }
+        }
 
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+        .point-in { animation: point-in .7s cubic-bezier(.22,1,.36,1) both; }
+        @keyframes point-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
 
-        .point-in { animation: point-in .6s ease both; }
-        @keyframes point-in { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
-
-        .check { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw-check .7s ease forwards; }
-        @keyframes draw-check { to { stroke-dashoffset: 0; } }
-
-        .draw { stroke-dasharray: 800; stroke-dashoffset: 800; animation: draw 1.6s ease forwards; }
+        .draw { stroke-dasharray: 800; stroke-dashoffset: 800; animation: draw 2s cubic-bezier(.22,1,.36,1) forwards; }
         @keyframes draw { to { stroke-dashoffset: 0; } }
 
-        .drop { opacity: 0; transform: translateY(-40px); animation: drop .6s cubic-bezier(.2,.8,.2,1) forwards; transform-box: fill-box; }
+        .drop { opacity: 0; transform: translateY(-30px); animation: drop .9s cubic-bezier(.22,1,.36,1) forwards; transform-box: fill-box; }
         @keyframes drop { to { opacity: 1; transform: translateY(0); } }
 
-        .road { animation: road-move 1s linear infinite; }
+        .road { animation: road-move 1.4s linear infinite; }
         @keyframes road-move { to { stroke-dashoffset: -32; } }
 
-        .bar-fill { transform: scaleX(0); animation: bar-in 1s cubic-bezier(.2,.8,.2,1) forwards; }
+        .bar-fill { transform: scaleX(0); animation: bar-in 1.4s cubic-bezier(.22,1,.36,1) forwards; }
         @keyframes bar-in { to { transform: scaleX(1); } }
 
         @media (prefers-reduced-motion: reduce) {
-          .reveal, .panel-enter, .point-in, .draw, .drop, .road, .bar-fill, .check { animation: none !important; transition: none !important; opacity: 1; transform: none; stroke-dashoffset: 0; }
+          .reveal, .rise, .point-in, .draw, .drop, .road, .bar-fill {
+            animation: none !important;
+            transition: none !important;
+            opacity: 1;
+            transform: none;
+            stroke-dashoffset: 0;
+          }
         }
       `}</style>
     </>
