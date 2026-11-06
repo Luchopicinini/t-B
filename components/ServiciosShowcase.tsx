@@ -406,12 +406,12 @@ export default function ServiciosShowcase() {
 
       {/* Panel principal */}
       <section id="panel-modo" role="tabpanel" className="mt-8 sm:mt-10">
-        <div key={mode.id} className="panel-enter grid items-stretch gap-6 md:grid-cols-2">
-          <div className={`${CARD} relative flex aspect-[4/3] items-center justify-center p-4 sm:aspect-[5/3] sm:p-6`}>
+                <div key={mode.id} className="panel-enter grid min-w-0 grid-cols-1 items-stretch gap-6 md:grid-cols-2">
+          <div className={`${CARD} relative flex min-w-0 aspect-[4/3] items-center justify-center p-4 sm:aspect-[5/3] sm:p-6`}>
             <Illustration id={mode.id} />
           </div>
 
-          <div className={CARD}>
+          <div className={`${CARD} min-w-0`}>
             <p className="font-serif text-3xl text-gold sm:text-4xl">{mode.code}</p>
             <h2 className="mt-2 text-lg text-cream sm:text-2xl">{mode.name}</h2>
             <p className="mt-1 text-sm italic text-gold">{mode.tagline}</p>
