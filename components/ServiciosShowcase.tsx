@@ -110,10 +110,11 @@ const FAQS = [
   { q: "¿Cubren todo el país?", a: "Sí. Entregamos en todo el país desde Córdoba, hasta tu comercio o depósito." },
 ];
 
-// Clases base de cada tarjeta
-const CARD = "border border-gold-dim bg-ink-2 p-6 sm:p-8 shadow-[0_18px_50px_-28px_rgba(0,0,0,.9)]";
+// Clases base: padding menor en celular, normal desde sm
+const CARD = "border border-gold-dim bg-ink-2 p-5 sm:p-8 shadow-[0_18px_50px_-28px_rgba(0,0,0,.9)]";
 const CARD_HOVER = "transition duration-300 hover:-translate-y-1 hover:border-gold hover:shadow-[0_24px_60px_-28px_rgba(212,178,110,.35)]";
 const LABEL = "text-[11px] font-medium uppercase tracking-[0.25em] text-gold";
+const TITLE = "mt-3 font-serif text-2xl leading-tight text-cream sm:text-3xl";
 
 function Illustration({ id }: { id: ModeId }) {
   if (id === "fcl") {
@@ -198,7 +199,7 @@ function Estimator({ mode }: { mode: Mode }) {
 
   if (mode.id !== "lcl") {
     return (
-      <div className="border border-gold-dim bg-ink p-6">
+      <div className="border border-gold-dim bg-ink p-5 sm:p-6">
         <p className={LABEL}>Costo</p>
         <p className="mt-3 text-sm leading-relaxed text-cream/90">
           {mode.id === "fcl"
@@ -210,7 +211,7 @@ function Estimator({ mode }: { mode: Mode }) {
   }
 
   return (
-    <div className="border border-gold-dim bg-ink p-6">
+    <div className="border border-gold-dim bg-ink p-5 sm:p-6">
       <p className={LABEL}>Estimación rápida</p>
       <div className="mt-4 flex items-baseline gap-2">
         <span className="font-serif text-3xl text-cream">{kg.toLocaleString("es-AR")}</span>
@@ -257,16 +258,16 @@ function Quiz({ onPick }: { onPick: (id: ModeId) => void }) {
   const off = "border-gold-dim bg-ink text-cream hover:border-gold";
 
   return (
-    <div className={`${CARD} grid gap-10 md:grid-cols-12`}>
+    <div className={`${CARD} grid gap-8 md:grid-cols-12 md:gap-10`}>
       <div className="md:col-span-5">
         <p className={LABEL}>Asistente</p>
-        <h2 className="mt-3 font-serif text-2xl text-cream sm:text-3xl">¿Cuál te conviene?</h2>
+        <h2 className={TITLE}>¿Cuál te conviene?</h2>
         <p className="mt-4 text-sm leading-relaxed text-cream/85">
           Respondé dos preguntas y te sugerimos la modalidad que mejor encaja con tu importación.
         </p>
       </div>
 
-      <div className="space-y-8 md:col-span-7">
+      <div className="space-y-6 md:col-span-7 md:space-y-8">
         <div>
           <p className="mb-3 text-sm text-cream">1. ¿Cuánta mercadería traés?</p>
           <div className="grid gap-2 sm:grid-cols-3">
@@ -299,11 +300,11 @@ function Quiz({ onPick }: { onPick: (id: ModeId) => void }) {
         )}
 
         {result && (
-          <div className="animate-[fadeUp_.6s_ease_both] border border-gold bg-gold/10 p-6">
+          <div className="animate-[fadeUp_.6s_ease_both] border border-gold bg-gold/10 p-5 sm:p-6">
             <p className={LABEL}>Te recomendamos</p>
             <p className="mt-2 font-serif text-2xl text-cream">{MODES.find((m) => m.id === result)?.name}</p>
             <p className="mt-2 text-sm text-cream/85">{MODES.find((m) => m.id === result)?.tagline}</p>
-            <div className="mt-6 flex flex-wrap gap-5 text-sm">
+            <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm">
               <button
                 onClick={() => {
                   onPick(result);
@@ -364,14 +365,14 @@ export default function ServiciosShowcase() {
   return (
     <>
       {/* Asistente */}
-      <section data-reveal className="reveal mt-20">
+      <section data-reveal className="reveal mt-16 sm:mt-20">
         <Quiz onPick={(id) => setActive(id)} />
       </section>
 
-      {/* Selector en tarjetas */}
-      <section data-reveal className="reveal mt-20">
-        <p className={`${LABEL} mb-6`}>Elegí una modalidad</p>
-        <div role="tablist" aria-label="Modalidades" className="grid gap-4 md:grid-cols-3">
+      {/* Selector de modalidad */}
+      <section data-reveal className="reveal mt-16 sm:mt-20">
+        <p className={`${LABEL} mb-5 sm:mb-6`}>Elegí una modalidad</p>
+        <div role="tablist" aria-label="Modalidades" className="grid grid-cols-3 gap-2 sm:gap-4">
           {MODES.map((m) => {
             const selected = m.id === active;
             return (
@@ -380,17 +381,19 @@ export default function ServiciosShowcase() {
                 role="tab"
                 aria-selected={selected}
                 onClick={() => setActive(m.id)}
-                className={`group relative border p-6 text-left transition duration-300 ${
+                className={`group relative border p-3 text-left transition duration-300 sm:p-6 ${
                   selected
                     ? "border-gold bg-gold/10 shadow-[0_20px_50px_-25px_rgba(212,178,110,.5)]"
                     : "border-gold-dim bg-ink-2 hover:-translate-y-1 hover:border-gold"
                 }`}
               >
-                <span className={`font-serif text-3xl ${selected ? "text-gold" : "text-cream"}`}>{m.code}</span>
-                <span className="mt-2 block text-sm text-cream">{m.name}</span>
-                <span className="mt-1 block text-xs text-soft">{m.tagline}</span>
+                <span className={`block font-serif text-base leading-none sm:text-3xl ${selected ? "text-gold" : "text-cream"}`}>
+                  {m.code}
+                </span>
+                <span className="mt-2 hidden text-sm text-cream sm:block">{m.name}</span>
+                <span className="mt-1 hidden text-xs text-soft sm:block">{m.tagline}</span>
                 <span
-                  className={`absolute inset-x-6 bottom-0 h-[2px] origin-center rounded-full bg-gold transition-transform duration-500 ${
+                  className={`absolute inset-x-3 bottom-0 h-[2px] origin-center rounded-full bg-gold transition-transform duration-500 sm:inset-x-6 ${
                     selected ? "scale-x-100" : "scale-x-0"
                   }`}
                 />
@@ -398,35 +401,36 @@ export default function ServiciosShowcase() {
             );
           })}
         </div>
+        <p className="mt-3 text-center text-[11px] text-soft sm:hidden">{mode.name}</p>
       </section>
 
       {/* Panel principal */}
-      <section id="panel-modo" role="tabpanel" className="mt-10">
-        <div key={mode.id} className="panel-enter grid gap-6 md:grid-cols-2">
-          <div className={`${CARD} relative flex aspect-[5/3] items-center justify-center`}>
+      <section id="panel-modo" role="tabpanel" className="mt-8 sm:mt-10">
+        <div key={mode.id} className="panel-enter grid items-stretch gap-6 md:grid-cols-2">
+          <div className={`${CARD} relative flex aspect-[4/3] items-center justify-center p-4 sm:aspect-[5/3] sm:p-6`}>
             <Illustration id={mode.id} />
           </div>
 
           <div className={CARD}>
-            <p className="font-serif text-4xl text-gold">{mode.code}</p>
-            <h2 className="mt-2 text-xl text-cream sm:text-2xl">{mode.name}</h2>
+            <p className="font-serif text-3xl text-gold sm:text-4xl">{mode.code}</p>
+            <h2 className="mt-2 text-lg text-cream sm:text-2xl">{mode.name}</h2>
             <p className="mt-1 text-sm italic text-gold">{mode.tagline}</p>
-            <p className="mt-5 text-base leading-relaxed text-cream/90">{mode.text}</p>
+            <p className="mt-4 text-sm leading-relaxed text-cream/90 sm:mt-5 sm:text-base">{mode.text}</p>
 
-            <div className="mt-8 space-y-5">
+            <div className="mt-6 space-y-4 sm:mt-8 sm:space-y-5">
               <Bar label="Volumen ideal" value={mode.bars.volumen} delay={100} />
               <Bar label="Economía por kilo" value={mode.bars.economia} delay={200} />
               <Bar label="Velocidad" value={mode.bars.velocidad} delay={300} />
             </div>
 
-            <div className="mt-8">
+            <div className="mt-6 sm:mt-8">
               <Estimator mode={mode} />
             </div>
           </div>
         </div>
 
         {/* Qué incluye / para quién */}
-        <div key={mode.id + "-info"} className="panel-enter mt-6 grid gap-6 md:grid-cols-3">
+        <div key={mode.id + "-info"} className="panel-enter mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           <div className={CARD}>
             <p className={`${LABEL} mb-5`}>Qué incluye</p>
             <ul className="space-y-4">
@@ -453,7 +457,7 @@ export default function ServiciosShowcase() {
             </ul>
           </div>
 
-          <div className={CARD}>
+          <div className={`${CARD} sm:col-span-2 xl:col-span-1`}>
             <p className="mb-5 text-[11px] font-medium uppercase tracking-[0.25em] text-soft">Mejor evitarla si</p>
             <ul className="space-y-3 text-sm text-cream/85">
               {mode.noIdeal.map((p) => (
@@ -466,10 +470,10 @@ export default function ServiciosShowcase() {
           </div>
         </div>
 
-        {/* Proceso en tarjetas */}
-        <div key={mode.id + "-steps"} className="panel-enter mt-20">
+        {/* Proceso */}
+        <div key={mode.id + "-steps"} className="panel-enter mt-16 sm:mt-20">
           <p className={LABEL}>Cómo funciona</p>
-          <h3 className="mt-3 font-serif text-2xl text-cream sm:text-3xl">El proceso, paso a paso</h3>
+          <h3 className={TITLE}>El proceso, paso a paso</h3>
           <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {mode.steps.map((s, i) => (
               <li
@@ -478,7 +482,7 @@ export default function ServiciosShowcase() {
                 className={`reveal ${CARD} ${CARD_HOVER} relative pt-8`}
                 style={{ transitionDelay: `${i * 80}ms` }}
               >
-                <span className="absolute -top-3 left-6 grid h-7 w-7 place-items-center bg-gold font-serif text-xs text-ink">
+                <span className="absolute -top-3 left-5 grid h-7 w-7 place-items-center bg-gold font-serif text-xs text-ink sm:left-6">
                   {i + 1}
                 </span>
                 <p className="text-sm leading-relaxed text-cream">{s}</p>
@@ -487,14 +491,14 @@ export default function ServiciosShowcase() {
           </ol>
         </div>
 
-        {/* Documentación en tarjetas */}
-        <div key={mode.id + "-docs"} className="panel-enter mt-20">
+        {/* Documentación */}
+        <div key={mode.id + "-docs"} className="panel-enter mt-16 sm:mt-20">
           <p className={LABEL}>Documentación</p>
-          <h3 className="mt-3 font-serif text-2xl text-cream">Lo que suele pedirse</h3>
+          <h3 className="mt-3 font-serif text-xl text-cream sm:text-2xl">Lo que suele pedirse</h3>
           <p className="mt-3 text-sm text-cream/80">La lista exacta depende de tu producto y de tu proveedor. Te la confirmamos al cotizar.</p>
-          <ul className="mt-8 grid gap-4 sm:grid-cols-2">
+          <ul className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4">
             {mode.docs.map((d) => (
-              <li key={d} className={`${CARD} ${CARD_HOVER} flex items-center gap-4 p-5`}>
+              <li key={d} className={`${CARD} ${CARD_HOVER} flex items-center gap-4 p-4 sm:p-5`}>
                 <span className="grid h-8 w-8 shrink-0 place-items-center border border-gold text-gold">
                   <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden="true">
                     <path d="M3 8.5 L6.5 12 L13 4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -507,13 +511,14 @@ export default function ServiciosShowcase() {
         </div>
       </section>
 
-      {/* Comparativa en tarjeta */}
-      <section data-reveal className="reveal mt-24">
+      {/* Comparativa */}
+      <section data-reveal className="reveal mt-20 sm:mt-24">
         <div className={CARD}>
           <p className={LABEL}>Comparativa</p>
-          <h2 className="mt-3 font-serif text-3xl text-cream sm:text-4xl">Las tres modalidades, lado a lado</h2>
-          <div className="mt-10 overflow-x-auto">
-            <table className="w-full min-w-[560px] border-collapse text-left text-sm">
+          <h2 className={TITLE}>Las tres modalidades, lado a lado</h2>
+          <p className="mt-2 text-[11px] text-soft sm:hidden">Deslizá la tabla para ver todo →</p>
+          <div className="mt-6 -mx-5 overflow-x-auto px-5 sm:mx-0 sm:mt-10 sm:px-0">
+            <table className="w-full min-w-[520px] border-collapse text-left text-sm">
               <thead>
                 <tr className="border-b border-gold text-[11px] uppercase tracking-[0.2em] text-gold">
                   <th className="py-4 pr-4 font-normal text-soft">&nbsp;</th>
@@ -543,10 +548,10 @@ export default function ServiciosShowcase() {
         </div>
       </section>
 
-      {/* Orígenes en tarjetas */}
-      <section data-reveal className="reveal mt-24">
+      {/* Orígenes */}
+      <section data-reveal className="reveal mt-20 sm:mt-24">
         <p className={LABEL}>Orígenes</p>
-        <h2 className="mt-3 font-serif text-2xl text-cream sm:text-3xl">Desde dónde importamos</h2>
+        <h2 className={TITLE.replace("text-2xl", "text-xl").replace("sm:text-3xl", "sm:text-3xl")}>Desde dónde importamos</h2>
         <p className="mt-3 text-sm text-cream/80">Tocá un origen para ver qué modalidades trabajamos desde allí.</p>
         <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {ORIGINS.map((o) => {
@@ -557,14 +562,14 @@ export default function ServiciosShowcase() {
                 <button
                   onClick={() => setOpenOrigin(open ? null : o)}
                   aria-expanded={open}
-                  className="flex w-full items-center justify-between p-6 text-left transition hover:text-gold"
+                  className="flex w-full items-center justify-between p-5 text-left transition hover:text-gold sm:p-6"
                 >
-                  <span className="font-serif text-xl text-cream">{o}</span>
+                  <span className="font-serif text-lg text-cream sm:text-xl">{o}</span>
                   <span className={`text-xl text-gold transition-transform duration-300 ${open ? "rotate-45" : ""}`}>+</span>
                 </button>
                 <div className={`grid transition-all duration-500 ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                   <div className="overflow-hidden">
-                    <div className="px-6 pb-6">
+                    <div className="px-5 pb-5 sm:px-6 sm:pb-6">
                       <p className={LABEL}>{info?.modes}</p>
                       <p className="mt-3 text-sm leading-relaxed text-cream/90">{info?.note}</p>
                     </div>
@@ -576,10 +581,10 @@ export default function ServiciosShowcase() {
         </ul>
       </section>
 
-      {/* Preguntas en tarjetas */}
-      <section data-reveal className="reveal mt-24">
+      {/* Preguntas */}
+      <section data-reveal className="reveal mt-20 sm:mt-24">
         <p className={LABEL}>Preguntas frecuentes</p>
-        <h2 className="mt-3 font-serif text-2xl text-cream sm:text-3xl">Lo que más nos preguntan</h2>
+        <h2 className="mt-3 font-serif text-xl text-cream sm:text-3xl">Lo que más nos preguntan</h2>
         <ul className="mt-8 grid gap-4 md:grid-cols-2">
           {FAQS.map((f, i) => {
             const open = openFaq === i;
@@ -588,14 +593,14 @@ export default function ServiciosShowcase() {
                 <button
                   onClick={() => setOpenFaq(open ? null : i)}
                   aria-expanded={open}
-                  className="flex w-full items-center justify-between gap-6 p-6 text-left transition hover:text-gold"
+                  className="flex w-full items-center justify-between gap-4 p-5 text-left transition hover:text-gold sm:gap-6 sm:p-6"
                 >
-                  <span className="text-base text-cream">{f.q}</span>
-                  <span className={`text-xl text-gold transition-transform duration-300 ${open ? "rotate-45" : ""}`}>+</span>
+                  <span className="text-sm text-cream sm:text-base">{f.q}</span>
+                  <span className={`shrink-0 text-xl text-gold transition-transform duration-300 ${open ? "rotate-45" : ""}`}>+</span>
                 </button>
                 <div className={`grid transition-all duration-500 ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                   <div className="overflow-hidden">
-                    <p className="px-6 pb-6 text-sm leading-relaxed text-cream/90">{f.a}</p>
+                    <p className="px-5 pb-5 text-sm leading-relaxed text-cream/90 sm:px-6 sm:pb-6">{f.a}</p>
                   </div>
                 </div>
               </li>
@@ -604,14 +609,14 @@ export default function ServiciosShowcase() {
         </ul>
       </section>
 
-      {/* Cierre en tarjeta */}
-      <section data-reveal className="reveal mt-24">
-        <div className={`${CARD} flex flex-col items-start justify-between gap-8 md:flex-row md:items-center`}>
+      {/* Cierre */}
+      <section data-reveal className="reveal mt-20 sm:mt-24">
+        <div className={`${CARD} flex flex-col gap-6 md:flex-row md:items-center md:justify-between md:gap-8`}>
           <div>
-            <p className="font-serif text-2xl text-cream sm:text-3xl">¿Tenés una importación en mente?</p>
+            <p className="font-serif text-xl text-cream sm:text-3xl">¿Tenés una importación en mente?</p>
             <p className="mt-2 text-sm text-cream/85">Contanos qué querés traer y te pasamos una cotización sin compromiso.</p>
           </div>
-          <div className="flex flex-wrap gap-6 text-sm">
+          <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
             <a href={waLink()} target="_blank" rel="noopener" className="font-medium text-gold underline-offset-4 hover:underline">
               Cotizar por WhatsApp
             </a>

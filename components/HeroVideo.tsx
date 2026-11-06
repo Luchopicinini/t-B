@@ -4,25 +4,17 @@ import { useEffect, useRef, useState } from "react";
 
 export default function HeroVideo() {
   const ref = useRef<HTMLVideoElement>(null);
-  const [desktop, setDesktop] = useState(false);
   const [playing, setPlaying] = useState(false);
 
-  // Solo carga el video en pantallas de 768px o más
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
-    const update = () => setDesktop(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
-    if (!desktop) return;
     const v = ref.current;
     if (!v) return;
 
+    // iPhone/Safari: estas propiedades tienen que estar listas antes de play()
     v.muted = true;
     v.defaultMuted = true;
+    v.setAttribute("playsinline", "");
+    v.setAttribute("webkit-playsinline", "");
 
     const onPlaying = () => setPlaying(true);
     const onPause = () => setPlaying(false);
@@ -30,36 +22,40 @@ export default function HeroVideo() {
     v.addEventListener("pause", onPause);
     v.addEventListener("ended", onPause);
 
-    v.play().catch(() => setPlaying(false));
+    const tryPlay = () => v.play().catch(() => setPlaying(false));
+    tryPlay();
+
+    // En iOS a veces hace falta un toque para destrabar la reproducción
+    const onTouch = () => {
+      tryPlay();
+      window.removeEventListener("touchstart", onTouch);
+    };
+    window.addEventListener("touchstart", onTouch, { passive: true });
+
+    // Si vuelve a la pestaña, reintenta
+    const onVisible = () => {
+      if (document.visibilityState === "visible") tryPlay();
+    };
+    document.addEventListener("visibilitychange", onVisible);
 
     return () => {
       v.removeEventListener("playing", onPlaying);
       v.removeEventListener("pause", onPause);
       v.removeEventListener("ended", onPause);
+      window.removeEventListener("touchstart", onTouch);
+      document.removeEventListener("visibilitychange", onVisible);
     };
-  }, [desktop]);
+  }, []);
 
   const handlePlay = () => {
     ref.current?.play().catch(() => setPlaying(false));
   };
-
-  if (!desktop) {
-    return (
-      <img
-        src="/media/hero.jpg"
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-    );
-  }
 
   return (
     <>
       <video
         ref={ref}
         className="absolute inset-0 h-full w-full object-cover"
-        src="/media/hero.mp4"
         poster="/media/hero.jpg"
         muted
         loop
@@ -67,12 +63,15 @@ export default function HeroVideo() {
         autoPlay
         preload="auto"
         aria-hidden="true"
-      />
+      >
+        <source src="/media/hero.mp4" type="video/mp4" />
+      </video>
+
       {!playing && (
         <button
           type="button"
           onClick={handlePlay}
-          className="absolute bottom-24 right-8 z-10 flex items-center gap-2 border border-gold/60 bg-ink/70 px-4 py-2 text-[11px] uppercase tracking-[0.2em] text-gold backdrop-blur transition hover:bg-gold hover:text-ink"
+          className="absolute bottom-24 right-5 z-10 flex items-center gap-2 border border-gold/60 bg-ink/70 px-4 py-2 text-[11px] uppercase tracking-[0.2em] text-gold backdrop-blur transition hover:bg-gold hover:text-ink sm:right-8"
         >
           <span aria-hidden="true">▶</span> Reproducir
         </button>

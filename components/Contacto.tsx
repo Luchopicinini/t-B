@@ -32,13 +32,13 @@ const EMPTY: Form = { nombre: "", empresa: "", contacto: "", modo: "no-se", orig
 const MAX_MSG = 500;
 const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE.address)}`;
 
-// Clases compartidas, mismas que en el resto del sitio
-const CARD = "border border-gold-dim bg-ink-2 p-6 sm:p-8 shadow-[0_18px_50px_-28px_rgba(0,0,0,.9)]";
+// Clases compartidas: padding menor en celular
+const CARD = "border border-gold-dim bg-ink-2 p-5 sm:p-8 shadow-[0_18px_50px_-28px_rgba(0,0,0,.9)]";
 const LABEL = "text-[11px] font-medium uppercase tracking-[0.25em] text-gold";
 const FIELD =
   "w-full border border-gold-dim bg-ink px-4 py-3 text-sm text-cream placeholder:text-cream/45 outline-none transition duration-300 focus:border-gold focus:shadow-[0_0_0_3px_rgba(242,207,126,.15)]";
 const chip = (on: boolean) =>
-  `border px-4 py-2 text-xs tracking-wide transition duration-300 ${
+  `border px-3 py-2 text-xs tracking-wide transition duration-300 sm:px-4 ${
     on ? "border-gold bg-gold text-ink" : "border-gold-dim bg-ink text-cream hover:border-gold"
   }`;
 
@@ -76,8 +76,8 @@ function openStatus(): "abierto" | "cerrado" | null {
   return minutes >= r[0] && minutes < r[1] ? "abierto" : "cerrado";
 }
 
-// ---------- Tarjeta con inclinación 3D y luz que sigue al mouse ----------
-function Tilt({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+// ---------- Tarjeta con inclinación 3D (solo con mouse, no en celular) ----------
+function Tilt({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
 
   const onMove = (e: MouseEvent<HTMLDivElement>) => {
@@ -96,7 +96,7 @@ function Tilt({ children, className = "" }: { children: React.ReactNode; classNa
   };
 
   return (
-    <div ref={ref} onMouseMove={onMove} onMouseLeave={onLeave} className={`tilt relative h-full transition-transform duration-300 ease-out ${className}`}>
+    <div ref={ref} onMouseMove={onMove} onMouseLeave={onLeave} className="tilt relative h-full transition-transform duration-300 ease-out">
       {children}
     </div>
   );
@@ -176,7 +176,9 @@ function RouteHero() {
           </g>
         ))}
       </svg>
-      <p className="absolute bottom-4 left-5 text-[11px] uppercase tracking-[0.25em] text-gold">Rutas de importación</p>
+      <p className="absolute bottom-3 left-4 text-[10px] uppercase tracking-[0.2em] text-gold sm:bottom-4 sm:left-5 sm:text-[11px] sm:tracking-[0.25em]">
+        Rutas de importación
+      </p>
     </div>
   );
 }
@@ -243,23 +245,30 @@ export default function Contacto() {
 
   return (
     <>
-      {/* Canales en tarjetas 3D */}
-      <section data-reveal className="reveal mt-20 grid gap-6 md:grid-cols-3">
+      {/* Canales */}
+      <section data-reveal className="reveal mt-16 grid gap-4 sm:mt-20 sm:gap-6 md:grid-cols-3">
         <Tilt>
-          <a href={waLink()} target="_blank" rel="noopener" className={`group ${CARD} flex h-full flex-col justify-between gap-10 transition duration-300 hover:border-gold`}>
+          <a
+            href={waLink()}
+            target="_blank"
+            rel="noopener"
+            className={`group ${CARD} flex h-full flex-col justify-between gap-6 transition duration-300 hover:border-gold sm:gap-10`}
+          >
             <div>
               <p className={LABEL}>WhatsApp</p>
-              <p className="mt-4 font-serif text-2xl text-cream transition group-hover:text-gold">{SITE.whatsappDisplay}</p>
+              <p className="mt-3 break-all font-serif text-xl text-cream transition group-hover:text-gold sm:mt-4 sm:text-2xl">
+                {SITE.whatsappDisplay}
+              </p>
             </div>
             <span className="text-xs font-medium text-gold">Abrir chat →</span>
           </a>
         </Tilt>
 
         <Tilt>
-          <div className={`${CARD} flex h-full flex-col justify-between gap-10 transition duration-300 hover:border-gold`}>
+          <div className={`${CARD} flex h-full flex-col justify-between gap-6 transition duration-300 hover:border-gold sm:gap-10`}>
             <div>
               <p className={LABEL}>Correo</p>
-              <a href={`mailto:${SITE.email}`} className="mt-4 block break-all font-serif text-lg text-cream transition hover:text-gold">
+              <a href={`mailto:${SITE.email}`} className="mt-3 block break-all font-serif text-base text-cream transition hover:text-gold sm:mt-4 sm:text-lg">
                 {SITE.email}
               </a>
             </div>
@@ -268,13 +277,13 @@ export default function Contacto() {
         </Tilt>
 
         <Tilt>
-          <div className={`${CARD} flex h-full flex-col justify-between gap-10 transition duration-300 hover:border-gold`}>
+          <div className={`${CARD} flex h-full flex-col justify-between gap-6 transition duration-300 hover:border-gold sm:gap-10`}>
             <div>
               <p className={LABEL}>Oficina</p>
-              <p className="mt-4 font-serif text-xl text-cream">Hilarion Plaza 4157</p>
+              <p className="mt-3 font-serif text-lg text-cream sm:mt-4 sm:text-xl">Hilarion Plaza 4157</p>
               <p className="mt-1 text-sm text-cream/80">Cerro de las Rosas, Córdoba · CP X5009</p>
             </div>
-            <div className="flex gap-6">
+            <div className="flex flex-wrap gap-x-6 gap-y-2">
               <CopyButton text={SITE.address} label="Copiar dirección" />
               <a href={MAPS_URL} target="_blank" rel="noopener" className="text-[11px] uppercase tracking-[0.2em] text-gold underline-offset-4 hover:underline">
                 Cómo llegar
@@ -285,24 +294,24 @@ export default function Contacto() {
       </section>
 
       {/* Mapa de rutas */}
-      <section data-reveal className="reveal mt-24">
+      <section data-reveal className="reveal mt-20 sm:mt-24">
         <p className={LABEL}>Desde dónde llega tu carga</p>
-        <h2 className="mt-3 font-serif text-3xl text-cream sm:text-4xl">Rutas que trabajamos cada semana</h2>
-        <div className="mt-8">
+        <h2 className="mt-3 font-serif text-2xl text-cream sm:text-4xl">Rutas que trabajamos cada semana</h2>
+        <div className="mt-6 sm:mt-8">
           <RouteHero />
         </div>
       </section>
 
       {/* Formulario + vista previa + horarios */}
-      <section data-reveal className="reveal mt-24 grid gap-6 md:grid-cols-12">
-        <form onSubmit={submit} noValidate className={`${CARD} space-y-8 md:col-span-7`}>
+      <section data-reveal className="reveal mt-20 grid gap-6 sm:mt-24 md:grid-cols-12">
+        <form onSubmit={submit} noValidate className={`${CARD} space-y-7 md:col-span-7 sm:space-y-8`}>
           <div>
             <p className={LABEL}>Escribinos</p>
-            <h2 className="mt-3 font-serif text-3xl text-cream sm:text-4xl">Contanos qué querés importar</h2>
+            <h2 className="mt-3 font-serif text-2xl text-cream sm:text-4xl">Contanos qué querés importar</h2>
             <p className="mt-3 text-sm text-cream/85">Mientras escribís, a la derecha ves el mensaje que se va a enviar.</p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="grid gap-5 sm:grid-cols-2 sm:gap-6">
             <div>
               <label htmlFor="nombre" className="mb-2 block text-[11px] uppercase tracking-[0.2em] text-cream/80">Nombre *</label>
               <input id="nombre" value={form.nombre} onChange={set("nombre")} className={FIELD} placeholder="Tu nombre" autoComplete="name" />
@@ -369,10 +378,10 @@ export default function Contacto() {
             />
           </div>
 
-          <div className="flex flex-wrap items-center gap-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6">
             <button
               type="submit"
-              className="border border-gold bg-gold px-8 py-3.5 text-[11px] font-medium uppercase tracking-[0.2em] text-ink transition duration-300 hover:-translate-y-0.5 hover:bg-transparent hover:text-gold"
+              className="w-full border border-gold bg-gold px-8 py-3.5 text-[11px] font-medium uppercase tracking-[0.2em] text-ink transition duration-300 hover:-translate-y-0.5 hover:bg-transparent hover:text-gold sm:w-auto"
             >
               Enviar por WhatsApp
             </button>
@@ -384,14 +393,14 @@ export default function Contacto() {
           {/* Vista previa */}
           <div className={CARD}>
             <p className={LABEL}>Vista previa del mensaje</p>
-            <div className="mt-5 border border-gold-faint bg-ink p-5">
-              <p className="whitespace-pre-wrap font-mono text-[12px] leading-relaxed text-cream/90">{message}</p>
+            <div className="mt-4 border border-gold-faint bg-ink p-4 sm:mt-5 sm:p-5">
+              <p className="whitespace-pre-wrap break-words font-mono text-[11px] leading-relaxed text-cream/90 sm:text-[12px]">{message}</p>
             </div>
           </div>
 
           {/* Horarios */}
           <div className={CARD}>
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <p className={LABEL}>Horarios</p>
               {info.status && (
                 <span
@@ -404,33 +413,33 @@ export default function Contacto() {
                 </span>
               )}
             </div>
-            <ul className="mt-6 space-y-2">
+            <ul className="mt-5 space-y-2 sm:mt-6">
               {HOURS.map((h) => {
                 const today = h.days.includes(info.today);
                 return (
                   <li
                     key={h.day}
-                    className={`flex justify-between border px-4 py-3 text-sm transition duration-300 ${
+                    className={`flex items-center justify-between gap-3 border px-3 py-2.5 text-sm transition duration-300 sm:px-4 sm:py-3 ${
                       today ? "border-gold bg-gold/10 text-cream" : "border-gold-faint text-cream/80"
                     }`}
                   >
                     <span>{h.day}</span>
-                    <span className={today ? "text-gold" : "text-cream/70"}>{h.time}</span>
+                    <span className={`text-right ${today ? "text-gold" : "text-cream/70"}`}>{h.time}</span>
                   </li>
                 );
               })}
             </ul>
-            <p className="mt-6 text-xs leading-relaxed text-cream/75">
+            <p className="mt-5 text-xs leading-relaxed text-cream/75 sm:mt-6">
               Las consultas fuera de horario se responden el próximo día hábil.
             </p>
           </div>
         </aside>
       </section>
 
-      {/* Mapa con overlay */}
-      <section data-reveal className="reveal mt-24">
+      {/* Mapa */}
+      <section data-reveal className="reveal mt-20 sm:mt-24">
         <div className={`${CARD} overflow-hidden p-0`}>
-          <div className="relative h-[380px] sm:h-[460px]">
+          <div className="relative h-[320px] sm:h-[420px] lg:h-[460px]">
             <iframe
               title="Ubicación de T&B Global Logística"
               src={`https://www.google.com/maps?q=${encodeURIComponent(SITE.address)}&output=embed`}
@@ -438,11 +447,11 @@ export default function Contacto() {
               referrerPolicy="no-referrer-when-downgrade"
               className="map-dark absolute inset-0 h-full w-full"
             />
-            <div className="absolute bottom-4 left-4 right-4 border border-gold bg-ink/90 p-5 backdrop-blur sm:bottom-6 sm:left-6 sm:right-auto sm:max-w-xs">
+            <div className="absolute inset-x-3 bottom-3 border border-gold bg-ink/90 p-4 backdrop-blur sm:inset-x-auto sm:bottom-6 sm:left-6 sm:max-w-xs sm:p-5">
               <p className={LABEL}>Dónde estamos</p>
-              <p className="mt-2 font-serif text-xl text-cream">Hilarion Plaza 4157</p>
+              <p className="mt-2 font-serif text-lg text-cream sm:text-xl">Hilarion Plaza 4157</p>
               <p className="text-sm text-cream/80">Cerro de las Rosas, Córdoba Capital</p>
-              <a href={MAPS_URL} target="_blank" rel="noopener" className="mt-4 inline-block text-xs font-medium uppercase tracking-[0.2em] text-gold underline-offset-4 hover:underline">
+              <a href={MAPS_URL} target="_blank" rel="noopener" className="mt-3 inline-block text-xs font-medium uppercase tracking-[0.2em] text-gold underline-offset-4 hover:underline sm:mt-4">
                 Cómo llegar →
               </a>
             </div>
@@ -451,13 +460,13 @@ export default function Contacto() {
       </section>
 
       {/* Cierre */}
-      <section data-reveal className="reveal mt-24">
-        <div className={`${CARD} flex flex-col items-start justify-between gap-8 md:flex-row md:items-center`}>
+      <section data-reveal className="reveal mt-20 sm:mt-24">
+        <div className={`${CARD} flex flex-col gap-6 md:flex-row md:items-center md:justify-between md:gap-8`}>
           <div>
-            <p className="font-serif text-2xl text-cream sm:text-3xl">¿Querés el número exacto?</p>
+            <p className="font-serif text-xl text-cream sm:text-3xl">¿Querés el número exacto?</p>
             <p className="mt-2 text-sm text-cream/85">Mandanos tu carga y te respondemos con una cotización formal.</p>
           </div>
-          <div className="flex flex-wrap gap-6 text-sm">
+          <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
             <a href={waLink()} target="_blank" rel="noopener" className="font-medium text-gold underline-offset-4 hover:underline">
               Cotizar por WhatsApp
             </a>
@@ -472,6 +481,7 @@ export default function Contacto() {
         .reveal { opacity: 0; transform: translateY(24px); transition: opacity .9s ease, transform .9s cubic-bezier(.2,.8,.2,1); }
         .reveal.is-in { opacity: 1; transform: none; }
 
+        /* Luz que sigue al mouse: solo en dispositivos con puntero fino */
         .tilt::before {
           content: "";
           position: absolute;
@@ -481,7 +491,12 @@ export default function Contacto() {
           opacity: 0;
           transition: opacity .4s ease;
         }
-        .tilt:hover::before { opacity: 1; }
+        @media (hover: hover) and (pointer: fine) {
+          .tilt:hover::before { opacity: 1; }
+        }
+        @media (hover: none) {
+          .tilt { transform: none !important; }
+        }
 
         .ct-dash { animation: ct-dash 1.2s linear infinite; }
         @keyframes ct-dash { to { stroke-dashoffset: -28; } }
