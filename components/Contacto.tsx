@@ -32,14 +32,14 @@ const EMPTY: Form = { nombre: "", empresa: "", contacto: "", modo: "no-se", orig
 const MAX_MSG = 500;
 const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE.address)}`;
 
-// Clases compartidas: padding menor en celular
-const CARD = "border border-gold-dim bg-ink-2 p-5 sm:p-8 shadow-[0_18px_50px_-28px_rgba(0,0,0,.9)]";
+// Superficie blanca con sombra suave (igual que el resto del sitio)
+const CARD = "bg-white border border-gold-faint rounded-sm p-5 sm:p-8 shadow-[0_12px_30px_-18px_rgba(70,50,20,.3)]";
 const LABEL = "text-[11px] font-medium uppercase tracking-[0.25em] text-gold";
 const FIELD =
-  "w-full border border-gold-dim bg-ink px-4 py-3 text-sm text-cream placeholder:text-cream/45 outline-none transition duration-300 focus:border-gold focus:shadow-[0_0_0_3px_rgba(242,207,126,.15)]";
+  "w-full border border-gold-dim bg-white px-4 py-3 text-sm text-cream placeholder:text-soft outline-none transition duration-300 focus:border-gold focus:shadow-[0_0_0_3px_rgba(140,100,40,.15)]";
 const chip = (on: boolean) =>
   `border px-3 py-2 text-xs tracking-wide transition duration-300 sm:px-4 ${
-    on ? "border-gold bg-gold text-ink" : "border-gold-dim bg-ink text-cream hover:border-gold"
+    on ? "border-gold bg-gold text-white" : "border-gold-dim bg-white text-cream hover:border-gold"
   }`;
 
 // ---------- Horario de Córdoba ----------
@@ -136,12 +136,12 @@ function RouteHero() {
       <svg viewBox="0 0 800 380" className="block h-auto w-full" aria-hidden="true">
         <defs>
           <radialGradient id="ct-glow" cx="50%" cy="60%" r="60%">
-            <stop offset="0" stopColor="#f2cf7e" stopOpacity=".22" />
-            <stop offset="1" stopColor="#0a0907" stopOpacity="0" />
+            <stop offset="0" stopColor="#8c6428" stopOpacity=".08" />
+            <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
           </radialGradient>
         </defs>
         <rect width="800" height="380" fill="url(#ct-glow)" />
-        <g stroke="#f2cf7e" strokeOpacity=".07">
+        <g stroke="#8c6428" strokeOpacity=".08">
           {Array.from({ length: 9 }).map((_, i) => (
             <line key={`v${i}`} x1={i * 100} y1="0" x2={i * 100} y2="380" />
           ))}
@@ -150,17 +150,17 @@ function RouteHero() {
           ))}
         </g>
 
-        <path id="ct-r1" d="M140 90 Q330 -10 520 250" fill="none" stroke="#f2cf7e" strokeOpacity=".4" strokeWidth="1.5" strokeDasharray="6 8" className="ct-dash" />
-        <path id="ct-r2" d="M660 110 Q610 230 520 250" fill="none" stroke="#f2cf7e" strokeOpacity=".4" strokeWidth="1.5" strokeDasharray="6 8" className="ct-dash" />
+        <path id="ct-r1" d="M140 90 Q330 -10 520 250" fill="none" stroke="#8c6428" strokeOpacity=".5" strokeWidth="1.5" strokeDasharray="6 8" className="ct-dash" />
+        <path id="ct-r2" d="M660 110 Q610 230 520 250" fill="none" stroke="#8c6428" strokeOpacity=".5" strokeWidth="1.5" strokeDasharray="6 8" className="ct-dash" />
 
         <g>
-          <path d="M-9 0 L3 -5 L10 0 L3 5 Z M-3 0 L-9 -7 L-6 0 L-9 7 Z" fill="#fffaf0" />
+          <path d="M-9 0 L3 -5 L10 0 L3 5 Z M-3 0 L-9 -7 L-6 0 L-9 7 Z" fill="#1c1812" />
           <animateMotion dur="6s" repeatCount="indefinite" rotate="auto">
             <mpath href="#ct-r1" />
           </animateMotion>
         </g>
         <g>
-          <path d="M-9 0 L3 -5 L10 0 L3 5 Z M-3 0 L-9 -7 L-6 0 L-9 7 Z" fill="#f2cf7e" />
+          <path d="M-9 0 L3 -5 L10 0 L3 5 Z M-3 0 L-9 -7 L-6 0 L-9 7 Z" fill="#8c6428" />
           <animateMotion dur="5s" begin="-2s" repeatCount="indefinite" rotate="auto">
             <mpath href="#ct-r2" />
           </animateMotion>
@@ -168,9 +168,9 @@ function RouteHero() {
 
         {points.map((p) => (
           <g key={p.l}>
-            <circle cx={p.x} cy={p.y} r="5" fill="#f2cf7e" />
-            <circle cx={p.x} cy={p.y} r="5" fill="none" stroke="#f2cf7e" className="ct-pulse" />
-            <text x={p.x} y={p.y - 18} textAnchor="middle" fill="#fffaf0" fontFamily="Poppins, sans-serif" fontSize="11" letterSpacing="3">
+            <circle cx={p.x} cy={p.y} r="5" fill="#8c6428" />
+            <circle cx={p.x} cy={p.y} r="5" fill="none" stroke="#8c6428" className="ct-pulse" />
+            <text x={p.x} y={p.y - 18} textAnchor="middle" fill="#1c1812" fontFamily="Poppins, sans-serif" fontSize="11" letterSpacing="3">
               {p.l}
             </text>
           </g>
@@ -281,7 +281,7 @@ export default function Contacto() {
             <div>
               <p className={LABEL}>Oficina</p>
               <p className="mt-3 font-serif text-lg text-cream sm:mt-4 sm:text-xl">Hilarion Plaza 4157</p>
-              <p className="mt-1 text-sm text-cream/80">Cerro de las Rosas, Córdoba · CP X5009</p>
+              <p className="mt-1 text-sm text-soft">Cerro de las Rosas, Córdoba · CP X5009</p>
             </div>
             <div className="flex flex-wrap gap-x-6 gap-y-2">
               <CopyButton text={SITE.address} label="Copiar dirección" />
@@ -308,28 +308,28 @@ export default function Contacto() {
           <div>
             <p className={LABEL}>Escribinos</p>
             <h2 className="mt-3 font-serif text-2xl text-cream sm:text-4xl">Contanos qué querés importar</h2>
-            <p className="mt-3 text-sm text-cream/85">Mientras escribís, a la derecha ves el mensaje que se va a enviar.</p>
+            <p className="mt-3 text-sm text-soft">Mientras escribís, a la derecha ves el mensaje que se va a enviar.</p>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 sm:gap-6">
             <div>
-              <label htmlFor="nombre" className="mb-2 block text-[11px] uppercase tracking-[0.2em] text-cream/80">Nombre *</label>
+              <label htmlFor="nombre" className="mb-2 block text-[11px] uppercase tracking-[0.2em] text-soft">Nombre *</label>
               <input id="nombre" value={form.nombre} onChange={set("nombre")} className={FIELD} placeholder="Tu nombre" autoComplete="name" />
               {touched && !nombreOk && <p className="mt-2 text-xs text-gold">Necesitamos tu nombre.</p>}
             </div>
             <div>
-              <label htmlFor="empresa" className="mb-2 block text-[11px] uppercase tracking-[0.2em] text-cream/80">Empresa</label>
+              <label htmlFor="empresa" className="mb-2 block text-[11px] uppercase tracking-[0.2em] text-soft">Empresa</label>
               <input id="empresa" value={form.empresa} onChange={set("empresa")} className={FIELD} placeholder="Opcional" autoComplete="organization" />
             </div>
             <div className="sm:col-span-2">
-              <label htmlFor="contacto" className="mb-2 block text-[11px] uppercase tracking-[0.2em] text-cream/80">WhatsApp o correo *</label>
+              <label htmlFor="contacto" className="mb-2 block text-[11px] uppercase tracking-[0.2em] text-soft">WhatsApp o correo *</label>
               <input id="contacto" value={form.contacto} onChange={set("contacto")} className={FIELD} placeholder="Para responderte" autoComplete="email" />
               {touched && !contactoOk && <p className="mt-2 text-xs text-gold">Dejanos un medio para responderte.</p>}
             </div>
           </div>
 
           <div>
-            <p className="mb-3 text-[11px] uppercase tracking-[0.2em] text-cream/80">Modalidad</p>
+            <p className="mb-3 text-[11px] uppercase tracking-[0.2em] text-soft">Modalidad</p>
             <div className="flex flex-wrap gap-2">
               {MODES.map((m) => (
                 <button
@@ -346,7 +346,7 @@ export default function Contacto() {
           </div>
 
           <div>
-            <p className="mb-3 text-[11px] uppercase tracking-[0.2em] text-cream/80">Origen</p>
+            <p className="mb-3 text-[11px] uppercase tracking-[0.2em] text-soft">Origen</p>
             <div className="flex flex-wrap gap-2">
               {ORIGINS.map((o) => (
                 <button
@@ -364,7 +364,7 @@ export default function Contacto() {
 
           <div>
             <div className="mb-2 flex items-baseline justify-between">
-              <label htmlFor="mensaje" className="text-[11px] uppercase tracking-[0.2em] text-cream/80">Mensaje</label>
+              <label htmlFor="mensaje" className="text-[11px] uppercase tracking-[0.2em] text-soft">Mensaje</label>
               <span className="text-[11px] tabular-nums text-soft">{form.mensaje.length} / {MAX_MSG}</span>
             </div>
             <textarea
@@ -381,11 +381,11 @@ export default function Contacto() {
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6">
             <button
               type="submit"
-              className="w-full border border-gold bg-gold px-8 py-3.5 text-[11px] font-medium uppercase tracking-[0.2em] text-ink transition duration-300 hover:-translate-y-0.5 hover:bg-transparent hover:text-gold sm:w-auto"
+              className="w-full border border-gold bg-gold px-8 py-3.5 text-[11px] font-medium uppercase tracking-[0.2em] text-white transition duration-300 hover:-translate-y-0.5 hover:bg-transparent hover:text-gold sm:w-auto"
             >
               Enviar por WhatsApp
             </button>
-            <p className="text-xs text-cream/70">Campos con * son obligatorios.</p>
+            <p className="text-xs text-soft">Campos con * son obligatorios.</p>
           </div>
         </form>
 
@@ -393,8 +393,8 @@ export default function Contacto() {
           {/* Vista previa */}
           <div className={CARD}>
             <p className={LABEL}>Vista previa del mensaje</p>
-            <div className="mt-4 border border-gold-faint bg-ink p-4 sm:mt-5 sm:p-5">
-              <p className="whitespace-pre-wrap break-words font-mono text-[11px] leading-relaxed text-cream/90 sm:text-[12px]">{message}</p>
+            <div className="mt-4 border border-gold-faint bg-[#fbf8f1] p-4 sm:mt-5 sm:p-5">
+              <p className="whitespace-pre-wrap break-words font-mono text-[11px] leading-relaxed text-cream sm:text-[12px]">{message}</p>
             </div>
           </div>
 
@@ -405,7 +405,7 @@ export default function Contacto() {
               {info.status && (
                 <span
                   className={`inline-flex items-center gap-2 border px-3 py-1 text-[10px] uppercase tracking-[0.2em] ${
-                    info.status === "abierto" ? "border-gold bg-gold/15 text-gold" : "border-gold-dim text-cream/80"
+                    info.status === "abierto" ? "border-gold bg-gold/15 text-gold" : "border-gold-dim text-soft"
                   }`}
                 >
                   <span className={`h-1.5 w-1.5 rounded-full ${info.status === "abierto" ? "animate-pulse bg-gold" : "bg-soft"}`} />
@@ -420,16 +420,16 @@ export default function Contacto() {
                   <li
                     key={h.day}
                     className={`flex items-center justify-between gap-3 border px-3 py-2.5 text-sm transition duration-300 sm:px-4 sm:py-3 ${
-                      today ? "border-gold bg-gold/10 text-cream" : "border-gold-faint text-cream/80"
+                      today ? "border-gold bg-gold/10 text-cream" : "border-gold-faint text-cream/85"
                     }`}
                   >
                     <span>{h.day}</span>
-                    <span className={`text-right ${today ? "text-gold" : "text-cream/70"}`}>{h.time}</span>
+                    <span className={`text-right ${today ? "text-gold" : "text-soft"}`}>{h.time}</span>
                   </li>
                 );
               })}
             </ul>
-            <p className="mt-5 text-xs leading-relaxed text-cream/75 sm:mt-6">
+            <p className="mt-5 text-xs leading-relaxed text-soft sm:mt-6">
               Las consultas fuera de horario se responden el próximo día hábil.
             </p>
           </div>
@@ -445,12 +445,12 @@ export default function Contacto() {
               src={`https://www.google.com/maps?q=${encodeURIComponent(SITE.address)}&output=embed`}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              className="map-dark absolute inset-0 h-full w-full"
+              className="absolute inset-0 h-full w-full"
             />
-            <div className="absolute inset-x-3 bottom-3 border border-gold bg-ink/90 p-4 backdrop-blur sm:inset-x-auto sm:bottom-6 sm:left-6 sm:max-w-xs sm:p-5">
+            <div className="absolute inset-x-3 bottom-3 border border-gold bg-white/95 p-4 backdrop-blur sm:inset-x-auto sm:bottom-6 sm:left-6 sm:max-w-xs sm:p-5">
               <p className={LABEL}>Dónde estamos</p>
               <p className="mt-2 font-serif text-lg text-cream sm:text-xl">Hilarion Plaza 4157</p>
-              <p className="text-sm text-cream/80">Cerro de las Rosas, Córdoba Capital</p>
+              <p className="text-sm text-soft">Cerro de las Rosas, Córdoba Capital</p>
               <a href={MAPS_URL} target="_blank" rel="noopener" className="mt-3 inline-block text-xs font-medium uppercase tracking-[0.2em] text-gold underline-offset-4 hover:underline sm:mt-4">
                 Cómo llegar →
               </a>
@@ -464,7 +464,7 @@ export default function Contacto() {
         <div className={`${CARD} flex flex-col gap-6 md:flex-row md:items-center md:justify-between md:gap-8`}>
           <div>
             <p className="font-serif text-xl text-cream sm:text-3xl">¿Querés el número exacto?</p>
-            <p className="mt-2 text-sm text-cream/85">Mandanos tu carga y te respondemos con una cotización formal.</p>
+            <p className="mt-2 text-sm text-soft">Mandanos tu carga y te respondemos con una cotización formal.</p>
           </div>
           <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
             <a href={waLink()} target="_blank" rel="noopener" className="font-medium text-gold underline-offset-4 hover:underline">
@@ -487,7 +487,7 @@ export default function Contacto() {
           position: absolute;
           inset: 0;
           pointer-events: none;
-          background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(242,207,126,.16), transparent 60%);
+          background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(140,100,40,.1), transparent 60%);
           opacity: 0;
           transition: opacity .4s ease;
         }
@@ -503,8 +503,6 @@ export default function Contacto() {
 
         .ct-pulse { transform-box: fill-box; transform-origin: center; animation: ct-pulse 2.4s ease-out infinite; }
         @keyframes ct-pulse { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(4); opacity: 0; } }
-
-        .map-dark { filter: invert(.92) hue-rotate(180deg) grayscale(.6) brightness(.8) sepia(.35); }
 
         @media (prefers-reduced-motion: reduce) {
           .reveal { opacity: 1; transform: none; transition: none; }

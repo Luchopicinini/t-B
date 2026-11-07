@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import WhatsAppFloat from "@/components/WhatsAppFloat";
+
 
 export const metadata: Metadata = {
   title: "T&B Global Logística Internacional",
@@ -24,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <div className="flex-1 pt-20">{children}</div>
         <Footer />
+        <WhatsAppFloat />
       </body>
     </html>
   );

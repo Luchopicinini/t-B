@@ -250,7 +250,12 @@ function Quiz({ onPick }: { onPick: (id: ModeId) => void }) {
       : "lcl"
     : null;
 
-  const opt = `relative pb-2 text-left text-sm transition-colors duration-500 ${EASE}`;
+  const option = (selected: boolean) =>
+    `flex min-h-[46px] w-full items-center justify-center border px-5 py-2.5 text-center text-sm transition-colors duration-300 sm:w-auto ${
+      selected
+        ? "border-gold bg-gold text-white"
+        : "border-gold-dim bg-transparent text-cream hover:border-gold hover:text-gold"
+    }`;
 
   return (
     <div className="grid gap-10 md:grid-cols-12">
@@ -265,7 +270,7 @@ function Quiz({ onPick }: { onPick: (id: ModeId) => void }) {
       <div className="min-w-0 space-y-10 md:col-span-8">
         <div>
           <p className="mb-4 text-sm text-cream">1. ¿Cuánta mercadería traés?</p>
-          <div className="flex flex-wrap gap-x-8 gap-y-3">
+          <div className="grid gap-3 sm:flex sm:flex-wrap sm:gap-3">
             {[
               { v: "poca", l: "Menos de 100 kg" },
               { v: "media", l: "Entre 100 y 1.000 kg" },
@@ -274,10 +279,10 @@ function Quiz({ onPick }: { onPick: (id: ModeId) => void }) {
               <button
                 key={o.v}
                 onClick={() => { setQ1(o.v); setQ2(null); }}
-                className={`${opt} ${q1 === o.v ? "text-gold" : "text-cream/65 hover:text-cream"}`}
+                aria-pressed={q1 === o.v}
+                className={option(q1 === o.v)}
               >
                 {o.l}
-                <span className={`absolute inset-x-0 bottom-0 h-px origin-left bg-gold transition-transform duration-700 ${EASE} ${q1 === o.v ? "scale-x-100" : "scale-x-0"}`} />
               </button>
             ))}
           </div>
@@ -286,14 +291,18 @@ function Quiz({ onPick }: { onPick: (id: ModeId) => void }) {
         {q1 === "poca" && (
           <div className="rise">
             <p className="mb-4 text-sm text-cream">2. ¿Qué tan urgente es?</p>
-            <div className="flex flex-wrap gap-x-8 gap-y-3">
+            <div className="grid gap-3 sm:flex sm:flex-wrap sm:gap-3">
               {[
                 { v: "urgente", l: "La necesito en pocos días" },
                 { v: "normal", l: "Puedo esperar" },
               ].map((o) => (
-                <button key={o.v} onClick={() => setQ2(o.v)} className={`${opt} ${q2 === o.v ? "text-gold" : "text-cream/65 hover:text-cream"}`}>
+                <button
+                  key={o.v}
+                  onClick={() => setQ2(o.v)}
+                  aria-pressed={q2 === o.v}
+                  className={option(q2 === o.v)}
+                >
                   {o.l}
-                  <span className={`absolute inset-x-0 bottom-0 h-px origin-left bg-gold transition-transform duration-700 ${EASE} ${q2 === o.v ? "scale-x-100" : "scale-x-0"}`} />
                 </button>
               ))}
             </div>
@@ -305,19 +314,19 @@ function Quiz({ onPick }: { onPick: (id: ModeId) => void }) {
             <p className={LABEL}>Te recomendamos</p>
             <p className="mt-3 font-serif text-3xl text-cream">{MODES.find((m) => m.id === result)?.name}</p>
             <p className="mt-2 text-sm text-cream/75">{MODES.find((m) => m.id === result)?.tagline}</p>
-            <div className="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-sm">
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
               <button
                 onClick={() => {
                   onPick(result);
                   document.getElementById("panel-modo")?.scrollIntoView({ behavior: "smooth", block: "start" });
                 }}
-                className="font-medium text-gold underline-offset-4 hover:underline"
+                className="border border-gold bg-gold px-6 py-3 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-white transition hover:bg-transparent hover:text-gold"
               >
                 Ver esta modalidad
               </button>
               <button
                 onClick={() => { setQ1(null); setQ2(null); }}
-                className="text-cream/65 underline-offset-4 hover:text-cream hover:underline"
+                className="border border-gold-dim px-6 py-3 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-cream transition hover:border-gold hover:text-gold"
               >
                 Empezar de nuevo
               </button>

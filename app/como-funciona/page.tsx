@@ -2,7 +2,7 @@ import ComoFunciona from "@/components/ComoFunciona";
 
 export default function ComoFuncionaPage() {
   return (
-    <div className="como-light">
+    <div className="svc-light">
       <main className="mx-auto max-w-6xl px-5 pb-24 pt-16 lg:px-8 lg:pt-28">
         <header className="max-w-3xl">
           <p className="como-kicker mb-4 text-[11px] font-medium uppercase tracking-[0.3em] text-gold">Cómo funciona</p>
