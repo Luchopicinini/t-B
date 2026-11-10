@@ -14,9 +14,24 @@ const STATS = [
 
 // PLACEHOLDER: completar con el equipo real (nombre, cargo y una frase breve)
 const TEAM = [
-  { name: "Nombre Apellido", role: "Fundador / Dirección", bio: "Breve descripción de la experiencia y el rol." },
-  { name: "Nombre Apellido", role: "Operaciones y logística", bio: "Breve descripción de la experiencia y el rol." },
-  { name: "Nombre Apellido", role: "Comercial y atención", bio: "Breve descripción de la experiencia y el rol." },
+  {
+    name: "Patricio Cormick",
+    role: "Gerente Comercial y de Logística",
+    bio: "Conecta a los clientes con la operación. Coordina la carga consolidada desde China, la relación con despachantes y transportistas y el seguimiento de cada envío puerta a puerta, para que el cliente sepa en todo momento dónde está su mercadería.",
+    image: "/media/1.jpg",
+  },
+  {
+    name: "Silvina Gil",
+    role: "Socia Fundadora y Gerente General",
+    bio: "Lidera T&B Global Logística y define el rumbo de la empresa. Su objetivo es construir una compañía sólida y confiable que acompañe a los comercios argentinos en cada importación con transparencia y compromiso a largo plazo.",
+    image: "/media/2.jpeg",
+  },
+  {
+    name: "Analia Villamea",
+    role: "Directora de Logística Internacional Chile-Argentina",
+    bio: "Aliada estratégica de T&B Global y responsable de unir dos mercados con una sola operación. Desde Chile dirige la logística entre ambos países y abre nuevas oportunidades comerciales a los dos lados de la cordillera. Planifica cada traslado y conoce de cerca a cada cliente.",
+    image: "/media/3.jpg",
+  },
 ];
 
 const VALUES = [
@@ -226,11 +241,13 @@ export default function QuienesSomos() {
         <div className="grid gap-5 sm:grid-cols-3">
           {TEAM.map((t) => (
             <div key={t.name + t.role} className={`${SURFACE} p-6`}>
-              <div className="relative mb-6 flex aspect-[4/5] items-center justify-center overflow-hidden border border-gold-faint bg-[#fbf8f1]">
-                <span className="font-serif text-5xl text-gold/50">
-                  {t.name.split(" ").map((w) => w[0]).join("")}
-                </span>
-              </div>
+            <div className="relative mb-6 aspect-[4/5] overflow-hidden border border-gold-faint bg-[#fbf8f1]">
+              <img
+                src={t.image}
+                alt={t.name}
+                className="h-full w-full object-cover"
+              />
+            </div>
               <h3 className="text-lg text-cream">{t.name}</h3>
               <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-gold">{t.role}</p>
               <p className="mt-3 text-sm leading-relaxed text-cream/80">{t.bio}</p>
