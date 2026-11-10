@@ -135,6 +135,30 @@ export default function QuienesSomos() {
         </div>
       </section>
 
+            {/* Equipo */}
+      <section data-reveal className="reveal mt-20 sm:mt-28">
+        <div className="mb-12 max-w-2xl">
+          <p className={LABEL}>Equipo</p>
+          <h2 className="mt-3 font-serif text-3xl text-cream sm:text-4xl">Las personas detrás de cada envío</h2>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-3">
+          {TEAM.map((t) => (
+            <div key={t.name + t.role} className={`${SURFACE} p-6`}>
+            <div className="relative mb-6 aspect-[4/5] overflow-hidden border border-gold-faint bg-[#fbf8f1]">
+              <img
+                src={t.image}
+                alt={t.name}
+                className="h-full w-full object-cover"
+              />
+            </div>
+              <h3 className="text-lg text-cream">{t.name}</h3>
+              <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-gold">{t.role}</p>
+              <p className="mt-3 text-sm leading-relaxed text-cream/80">{t.bio}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Cifras */}
       <section data-reveal className="reveal mt-20 grid grid-cols-2 gap-4 sm:mt-24 md:grid-cols-4">
         {STATS.map((s) => (
@@ -232,29 +256,7 @@ export default function QuienesSomos() {
         </div>
       </section>
 
-      {/* Equipo */}
-      <section data-reveal className="reveal mt-20 sm:mt-28">
-        <div className="mb-12 max-w-2xl">
-          <p className={LABEL}>Equipo</p>
-          <h2 className="mt-3 font-serif text-3xl text-cream sm:text-4xl">Las personas detrás de cada envío</h2>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-3">
-          {TEAM.map((t) => (
-            <div key={t.name + t.role} className={`${SURFACE} p-6`}>
-            <div className="relative mb-6 aspect-[4/5] overflow-hidden border border-gold-faint bg-[#fbf8f1]">
-              <img
-                src={t.image}
-                alt={t.name}
-                className="h-full w-full object-cover"
-              />
-            </div>
-              <h3 className="text-lg text-cream">{t.name}</h3>
-              <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-gold">{t.role}</p>
-              <p className="mt-3 text-sm leading-relaxed text-cream/80">{t.bio}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+
 
       {/* Cierre */}
       <section data-reveal className="reveal mt-20 sm:mt-28">
