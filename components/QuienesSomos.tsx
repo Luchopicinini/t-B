@@ -18,19 +18,19 @@ const TEAM = [
     name: "Patricio Cormick",
     role: "Gerente Comercial y de Logística",
     bio: "Conecta a los clientes con la operación. Coordina la carga consolidada desde China, la relación con despachantes y transportistas y el seguimiento de cada envío puerta a puerta, para que el cliente sepa en todo momento dónde está su mercadería.",
-    image: "/media/1.jpg",
+    image: "/media/1.png",
   },
   {
     name: "Silvina Gil",
     role: "Socia Fundadora y Gerente General",
     bio: "Lidera T&B Global Logística y define el rumbo de la empresa. Su objetivo es construir una compañía sólida y confiable que acompañe a los comercios argentinos en cada importación con transparencia y compromiso a largo plazo.",
-    image: "/media/2.jpeg",
+    image: "/media/2.png",
   },
   {
     name: "Analia Villamea",
     role: "Directora de Logística Internacional Chile-Argentina",
     bio: "Aliada estratégica de T&B Global y responsable de unir dos mercados con una sola operación. Desde Chile dirige la logística entre ambos países y abre nuevas oportunidades comerciales a los dos lados de la cordillera. Planifica cada traslado y conoce de cerca a cada cliente.",
-    image: "/media/3.jpg",
+    image: "/media/3.png",
   },
 ];
 
