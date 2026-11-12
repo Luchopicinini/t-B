@@ -21,7 +21,7 @@ const TEAM = [
     image: "/media/1.png",
   },
   {
-    name: "Silvina Gil",
+    name: "Silvina Gill",
     role: "Socia Fundadora y Gerente General",
     bio: "Lidera T&B Global Logística y define el rumbo de la empresa. Su objetivo es construir una compañía sólida y confiable que acompañe a los comercios argentinos en cada importación con transparencia y compromiso a largo plazo.",
     image: "/media/2.png",
@@ -31,6 +31,18 @@ const TEAM = [
     role: "Directora de Logística Internacional Chile-Argentina",
     bio: "Aliada estratégica de T&B Global y responsable de unir dos mercados con una sola operación. Desde Chile dirige la logística entre ambos países y abre nuevas oportunidades comerciales a los dos lados de la cordillera. Planifica cada traslado y conoce de cerca a cada cliente.",
     image: "/media/3.png",
+  },
+    {
+    name: "",
+    role: "",
+    bio: "",
+    image: "",
+  },
+    {
+    name: "",
+    role: "",
+    bio: "",
+    image: "",
   },
 ];
 
