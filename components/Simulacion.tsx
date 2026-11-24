@@ -4,23 +4,36 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ORIGINS, SITE, waLink } from "@/lib/site";
 
-type ModeId = "fcl" | "lcl" | "courier";
+type Mode = "fcl" | "lcl" | "courier";
 
-const MODES: { id: ModeId; code: string; name: string; hint: string }[] = [
+interface ModeOption {
+  id: Mode;
+  code: string;
+  name: string;
+  hint: string;
+}
+
+const MODES: ModeOption[] = [
   { id: "lcl", code: "LCL", name: "Carga consolidada", hint: "Pagás por kilo. Ideal para cargas medianas o chicas." },
   { id: "fcl", code: "FCL", name: "Contenedor completo", hint: "Un contenedor exclusivo. Para volúmenes grandes." },
   { id: "courier", code: "COURIER", name: "Courier aéreo", hint: "Envíos livianos y urgentes, puerta a puerta." },
 ];
 
-const EXAMPLES = [
-  { label: "Pedido chico", kg: 80, mode: "lcl" as ModeId },
-  { label: "Reposición mensual", kg: 350, mode: "lcl" as ModeId },
-  { label: "Importación grande", kg: 900, mode: "lcl" as ModeId },
+const QUICK_PRESETS = [
+  { label: "Pedido chico", kg: 80, mode: "lcl" as Mode },
+  { label: "Reposición mensual", kg: 350, mode: "lcl" as Mode },
+  { label: "Importación grande", kg: 900, mode: "lcl" as Mode },
 ];
 
 const CONTAINERS = [
-  { id: "20", label: "Contenedor 20'" },
-  { id: "40", label: "Contenedor 40'" },
+  { id: "20", label: "20 pies", note: "Carga general estándar" },
+  { id: "40", label: "40 pies", note: "Mayor volumen cúbico" },
+];
+
+const COST_ITEMS = [
+  { label: "Despacho aduanero", detail: "Según la cotización" },
+  { label: "Impuestos y tasas", detail: "Según aduana" },
+  { label: "Entrega en tu puerta", detail: "Según la cotización" },
 ];
 
 const FAQS = [
@@ -42,295 +55,355 @@ const FAQS = [
   },
 ];
 
-// Tarjetas blancas con sombra suave (igual que Servicios y Cómo funciona)
-const CARD = "bg-white border border-gold-faint rounded-sm p-5 sm:p-8 shadow-[0_12px_30px_-18px_rgba(70,50,20,.3)]";
-const CARD_HOVER = "transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgba(70,50,20,.35)]";
-const LABEL = "text-[11px] font-medium uppercase tracking-[0.25em] text-gold";
+const EYEBROW = "text-[11px] font-medium uppercase tracking-[0.22em] text-gold";
 
 export default function Simulacion() {
-  const [mode, setMode] = useState<ModeId>("lcl");
+  const [mode, setMode] = useState<Mode>("lcl");
   const [kg, setKg] = useState(200);
-  const [origin, setOrigin] = useState<string>("China");
+  const [origin, setOrigin] = useState("China");
   const [container, setContainer] = useState("20");
   const [copied, setCopied] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
-    const els = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)");
-    const io = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("is-in");
-            io.unobserve(e.target);
-          }
-        }),
+    const targets = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)"));
+    if (!targets.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.add("is-in");
+          observer.unobserve(entry.target);
+        }
+      },
       { threshold: 0.12 }
     );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+
+    targets.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
   }, []);
 
-  const current = MODES.find((m) => m.id === mode)!;
-  const flete = mode === "lcl" ? kg * SITE.pricePerKg : null;
+  const activeMode = MODES.find((item) => item.id === mode) ?? MODES[0];
+  const estimatedFreight = mode === "lcl" ? kg * SITE.pricePerKg : null;
 
-  const summary = [
-    `Simulación T&B Global`,
-    `Modalidad: ${current.code} (${current.name})`,
+  const handleKgChange = (value: number) => {
+    if (Number.isNaN(value)) return;
+    const clamped = Math.min(2000, Math.max(10, value));
+    setKg(clamped);
+  };
+
+  const cargoSummary = mode === "fcl" ? `Contenedor: ${container}'` : `Peso estimado: ${kg} kg`;
+  const freightSummary =
+    estimatedFreight !== null
+      ? `Flete de referencia: USD ${estimatedFreight.toLocaleString("es-AR")} (sin impuestos ni aduana)`
+      : "Flete: a cotizar";
+
+  const clipboardText = [
+    "Simulación T&B Global",
+    `Modalidad: ${activeMode.code} (${activeMode.name})`,
     `Origen: ${origin}`,
-    mode === "fcl" ? `Contenedor: ${container}'` : `Peso estimado: ${kg} kg`,
-    flete !== null ? `Flete de referencia: USD ${flete.toLocaleString("es-AR")} (sin impuestos ni aduana)` : "Flete: a cotizar",
+    cargoSummary,
+    freightSummary,
   ].join("\n");
 
-  const copy = async () => {
+  const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(summary);
+      await navigator.clipboard.writeText(clipboardText);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
+      window.setTimeout(() => setCopied(false), 1800);
     } catch {
       setCopied(false);
     }
   };
 
-  const waText = `Hola! Hice una simulación en la web: ${current.code}, ${origin}${
+  const whatsappMessage = `Hola! Hice una simulación en la web: ${activeMode.code}, ${origin}${
     mode === "fcl" ? `, contenedor ${container}'` : `, ${kg} kg`
   }. ¿Me pasan cotización?`;
 
   return (
-    <>
-      {/* Ejemplos */}
-      <section data-reveal className="reveal mt-16 sm:mt-20">
-        <p className={`${LABEL} mb-5 sm:mb-6`}>Ejemplos rápidos</p>
-        <div className="grid gap-3 sm:grid-cols-3 sm:gap-4">
-          {EXAMPLES.map((ex) => (
-            <button
-              key={ex.label}
-              onClick={() => {
-                setMode(ex.mode);
-                setKg(ex.kg);
-              }}
-              className={`group flex items-center justify-between gap-4 ${CARD} ${CARD_HOVER} text-left sm:block`}
-            >
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.2em] text-soft">{ex.label}</p>
-                <p className="mt-1 font-serif text-xl text-cream sm:mt-3 sm:text-2xl">{ex.kg} kg</p>
-              </div>
-              <p className="shrink-0 text-xs font-medium text-gold opacity-100 transition-opacity duration-300 sm:mt-3 sm:opacity-0 sm:group-hover:opacity-100">
-                Cargar →
-              </p>
-            </button>
-          ))}
+    <div className="mt-14 space-y-20 sm:mt-16 sm:space-y-24">
+      <section data-reveal className="reveal border-y border-gold-faint py-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <span className={EYEBROW}>Cargas habituales</span>
+          <div className="flex flex-wrap gap-2">
+            {QUICK_PRESETS.map((preset) => {
+              const isCurrentPreset = mode === preset.mode && kg === preset.kg;
+              return (
+                <button
+                  key={preset.label}
+                  type="button"
+                  onClick={() => {
+                    setMode(preset.mode);
+                    setKg(preset.kg);
+                  }}
+                  className={`rounded-sm border px-3 py-1.5 text-xs transition ${
+                    isCurrentPreset
+                      ? "border-gold bg-gold/10 font-medium text-gold"
+                      : "border-gold-faint bg-white/70 text-cream hover:border-gold"
+                  }`}
+                >
+                  {preset.label} · {preset.kg} kg
+                </button>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* Calculadora */}
-      <section data-reveal className="reveal mt-10 grid gap-6 sm:mt-12 md:grid-cols-12">
-        {/* Controles */}
-        <div className={`${CARD} space-y-8 md:col-span-7 sm:space-y-10`}>
-          <div>
-            <p className={`${LABEL} mb-4`}>1. Modalidad</p>
-            <div role="tablist" className="grid grid-cols-3 gap-2 sm:gap-3">
-              {MODES.map((m) => {
-                const selected = mode === m.id;
+      <section data-reveal className="reveal grid gap-10 lg:grid-cols-12 lg:items-start lg:gap-12">
+        <div className="space-y-10 lg:col-span-7">
+          <div className="border-b border-gold-faint pb-8">
+            <div className="flex items-baseline justify-between gap-4">
+              <p className={EYEBROW}>01 / Modalidad</p>
+              <span className="text-xs text-soft">{activeMode.name}</span>
+            </div>
+
+            <div role="tablist" className="mt-4 grid grid-cols-3 border border-gold-faint bg-white">
+              {MODES.map((item, index) => {
+                const isSelected = mode === item.id;
                 return (
                   <button
-                    key={m.id}
+                    key={item.id}
+                    type="button"
                     role="tab"
-                    aria-selected={selected}
-                    onClick={() => setMode(m.id)}
-                    className={`border p-3 text-center transition duration-300 sm:p-4 ${
-                      selected
-                        ? "border-gold bg-gold/10 shadow-[0_16px_40px_-22px_rgba(140,100,40,.4)]"
-                        : "border-gold-faint bg-white hover:-translate-y-0.5 hover:border-gold"
-                    }`}
+                    aria-selected={isSelected}
+                    onClick={() => setMode(item.id)}
+                    className={`px-3 py-4 text-left transition sm:px-5 ${
+                      index > 0 ? "border-l border-gold-faint" : ""
+                    } ${isSelected ? "bg-gold text-white" : "text-cream hover:bg-gold/5"}`}
                   >
-                    <span className={`block font-serif text-base sm:text-xl ${selected ? "text-gold" : "text-cream"}`}>{m.code}</span>
-                    <span className="mt-1 hidden text-[11px] text-soft sm:block">{m.name}</span>
+                    <span className="block font-serif text-base sm:text-lg">{item.code}</span>
+                    <span className={`mt-0.5 block text-[11px] ${isSelected ? "text-white/85" : "text-soft"}`}>
+                      {item.name}
+                    </span>
                   </button>
                 );
               })}
             </div>
-            <p className="mt-4 text-sm text-cream/90">{current.hint}</p>
+            <p className="mt-3 text-sm text-cream/85">{activeMode.hint}</p>
           </div>
 
-          <div>
-            <p className={`${LABEL} mb-4`}>2. Origen</p>
-            <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap">
-              {ORIGINS.map((o) => (
-                <button
-                  key={o}
-                  onClick={() => setOrigin(o)}
-                  aria-pressed={origin === o}
-                  className={`border px-2 py-2 text-[11px] uppercase tracking-[0.12em] transition-colors duration-300 sm:px-4 sm:text-xs sm:tracking-[0.18em] ${
-                    origin === o
-                      ? "border-gold bg-gold text-white"
-                      : "border-gold-faint bg-white text-cream hover:border-gold"
-                  }`}
-                >
-                  {o}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {mode === "fcl" ? (
-            <div>
-              <p className={`${LABEL} mb-4`}>3. Tamaño del contenedor</p>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {CONTAINERS.map((c) => (
+          <div className="border-b border-gold-faint pb-8">
+            <p className={EYEBROW}>02 / Origen del embarque</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {ORIGINS.map((place) => {
+                const active = origin === place;
+                return (
                   <button
-                    key={c.id}
-                    onClick={() => setContainer(c.id)}
-                    aria-pressed={container === c.id}
-                    className={`border px-5 py-4 text-left text-sm transition duration-300 ${
-                      container === c.id
-                        ? "border-gold bg-gold/10 text-gold"
+                    key={place}
+                    type="button"
+                    onClick={() => setOrigin(place)}
+                    aria-pressed={active}
+                    className={`rounded-sm border px-3.5 py-2 text-xs tracking-wide transition ${
+                      active
+                        ? "border-cream bg-cream text-white"
                         : "border-gold-faint bg-white text-cream hover:border-gold"
                     }`}
                   >
-                    {c.label}
+                    {place}
                   </button>
-                ))}
-              </div>
+                );
+              })}
             </div>
-          ) : (
-            <div>
-              <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-                <p className={LABEL}>3. Peso estimado</p>
-                <p className="font-serif text-2xl text-cream">
-                  {kg.toLocaleString("es-AR")} <span className="font-sans text-sm text-soft">kg</span>
-                </p>
-              </div>
-              <input
-                type="range"
-                min={10}
-                max={2000}
-                step={10}
-                value={kg}
-                onChange={(e) => setKg(Number(e.target.value))}
-                aria-label="Peso estimado en kilos"
-                className="w-full accent-[#8c6428]"
-              />
-              <div className="mt-2 flex justify-between text-[10px] tracking-[0.15em] text-soft">
-                <span>10 kg</span>
-                <span>2.000 kg</span>
-              </div>
-            </div>
-          )}
-        </div>
+          </div>
 
-        {/* Resultado */}
-        <aside className={`${CARD} md:col-span-5 md:sticky md:top-28 md:self-start`}>
-          <p className={LABEL}>Resultado estimado</p>
-
-          <div className="mt-5 sm:mt-6">
-            {flete !== null ? (
+          <div>
+            {mode === "fcl" ? (
               <>
-                <p className="font-serif text-4xl tabular-nums text-cream sm:text-5xl">
-                  USD {flete.toLocaleString("es-AR")}
-                </p>
-                <p className="mt-2 text-xs text-soft">Flete de referencia · {SITE.pricePerKg} USD por kilo</p>
+                <p className={EYEBROW}>03 / Equipo</p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {CONTAINERS.map((box) => {
+                    const active = container === box.id;
+                    return (
+                      <button
+                        key={box.id}
+                        type="button"
+                        onClick={() => setContainer(box.id)}
+                        aria-pressed={active}
+                        className={`flex items-center justify-between border px-4 py-3.5 text-left transition ${
+                          active
+                            ? "border-gold bg-gold/10 text-cream"
+                            : "border-gold-faint bg-white text-cream/80 hover:border-gold"
+                        }`}
+                      >
+                        <span className="font-serif text-base">{box.label}</span>
+                        <span className="text-xs text-soft">{box.note}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </>
             ) : (
               <>
-                <p className="font-serif text-2xl text-cream sm:text-3xl">A cotizar</p>
-                <p className="mt-2 text-xs text-soft">Depende de la ruta, la temporada y el contenedor.</p>
+                <div className="flex items-end justify-between gap-4">
+                  <label htmlFor="peso-estimado-input" className={EYEBROW}>
+                    03 / Peso estimado
+                  </label>
+                  <div className="flex items-baseline gap-1.5 border-b border-gold pb-1">
+                    <input
+                      id="peso-estimado-input"
+                      type="number"
+                      min={10}
+                      max={2000}
+                      step={10}
+                      value={kg}
+                      onChange={(e) => handleKgChange(Number(e.target.value))}
+                      className="w-24 bg-transparent text-right font-serif text-2xl tabular-nums text-cream focus:outline-none"
+                    />
+                    <span className="text-xs uppercase tracking-widest text-soft">kg</span>
+                  </div>
+                </div>
+
+                <input
+                  type="range"
+                  min={10}
+                  max={2000}
+                  step={10}
+                  value={kg}
+                  onChange={(e) => setKg(Number(e.target.value))}
+                  aria-label="Ajustar peso estimado en kilos"
+                  className="mt-5 w-full accent-[#8c6428]"
+                />
+                <div className="mt-1.5 flex justify-between text-[11px] text-soft">
+                  <span>Mínimo 10 kg</span>
+                  <span>Máximo 2.000 kg</span>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        <aside className="border-t-2 border-gold bg-[#faf7f2] p-6 sm:p-8 lg:col-span-5 lg:sticky lg:top-28">
+          <div className="flex items-center justify-between border-b border-gold-faint pb-4">
+            <span className={EYEBROW}>Estimación de flete</span>
+            <span className="text-xs text-soft">
+              {activeMode.code} · {origin}
+            </span>
+          </div>
+
+          <div className="py-6">
+            {estimatedFreight !== null ? (
+              <>
+                <p className="font-serif text-4xl tabular-nums text-cream sm:text-5xl">
+                  USD {estimatedFreight.toLocaleString("es-AR")}
+                </p>
+                <p className="mt-2 text-xs text-soft">
+                  Base de {SITE.pricePerKg} USD/kg sobre {kg.toLocaleString("es-AR")} kg estimados.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="font-serif text-3xl text-cream">Cotización a medida</p>
+                <p className="mt-2 text-xs leading-relaxed text-soft">
+                  {mode === "fcl"
+                    ? `Contenedor de ${container} pies desde ${origin}. Sujeto a disponibilidad naviera y temporada.`
+                    : `Envío courier desde ${origin} por ${kg.toLocaleString("es-AR")} kg. Se calcula según peso o volumen final.`}
+                </p>
               </>
             )}
           </div>
 
-          <ul className="mt-6 divide-y divide-gold-faint border-y border-gold-faint text-sm sm:mt-8">
-            {[
-              { k: "Flete", v: flete !== null ? "Incluido en la referencia" : "A cotizar" },
-              { k: "Despacho aduanero", v: "Según la cotización" },
-              { k: "Impuestos y tasas", v: "Según aduana" },
-              { k: "Entrega en tu puerta", v: "Según la cotización" },
-            ].map((r) => (
-              <li key={r.k} className="flex items-start justify-between gap-4 py-3">
-                <span className="text-cream">{r.k}</span>
-                <span className="text-right text-soft">{r.v}</span>
-              </li>
+          <dl className="divide-y divide-gold-faint border-t border-gold-faint text-sm">
+            <div className="flex justify-between gap-4 py-2.5">
+              <dt className="text-cream/80">Flete internacional</dt>
+              <dd className="font-medium text-cream">
+                {estimatedFreight !== null ? `USD ${estimatedFreight.toLocaleString("es-AR")}` : "A cotizar"}
+              </dd>
+            </div>
+            {COST_ITEMS.map((item) => (
+              <div key={item.label} className="flex justify-between gap-4 py-2.5">
+                <dt className="text-cream/80">{item.label}</dt>
+                <dd className="text-soft">{item.detail}</dd>
+              </div>
             ))}
-          </ul>
+          </dl>
 
-          <p className="mt-5 text-xs leading-relaxed text-soft sm:mt-6">
-            Valores orientativos. No incluyen impuestos ni gastos de aduana. La cotización formal se confirma con tu
-            carga concreta.
+          <p className="mt-5 text-xs leading-relaxed text-soft">
+            Referencia orientativa sin impuestos ni gastos locales. Se confirma al revisar la mercadería.
           </p>
 
-          <div className="mt-7 flex flex-col gap-3 sm:mt-8">
+          <div className="mt-6 space-y-2.5">
             <a
-              href={waLink(waText)}
+              href={waLink(whatsappMessage)}
               target="_blank"
               rel="noopener"
-              className="block border border-gold bg-gold py-3.5 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-white transition hover:bg-transparent hover:text-gold"
+              className="block w-full bg-cream px-4 py-3.5 text-center text-xs font-medium uppercase tracking-[0.18em] text-white transition hover:bg-gold"
             >
-              Pedir cotización formal
+              Consultar por WhatsApp
             </a>
             <button
-              onClick={copy}
-              className="py-2 text-center text-[11px] uppercase tracking-[0.2em] text-soft transition hover:text-gold"
+              type="button"
+              onClick={handleCopy}
+              className="w-full border border-gold-faint bg-white px-4 py-2.5 text-center text-xs uppercase tracking-[0.16em] text-cream transition hover:border-gold"
             >
-              {copied ? "Resumen copiado" : "Copiar resumen"}
+              {copied ? "Resumen copiado" : "Copiar detalle"}
             </button>
           </div>
         </aside>
       </section>
 
-      {/* Preguntas */}
-      <section data-reveal className="reveal mt-20 sm:mt-24">
-        <p className={LABEL}>Dudas frecuentes</p>
-        <h2 className="mt-3 font-serif text-xl text-cream sm:text-3xl">Sobre los costos</h2>
-        <ul className="mt-6 grid gap-3 sm:mt-8 md:grid-cols-2 md:gap-4">
-          {FAQS.map((f, i) => {
-            const open = openFaq === i;
+      <section data-reveal className="reveal border-t border-gold-faint pt-14">
+        <div className="max-w-xl">
+          <p className={EYEBROW}>Preguntas frecuentes</p>
+          <h2 className="mt-2 font-serif text-2xl text-cream sm:text-3xl">Cómo se arma el número</h2>
+        </div>
+
+        <div className="mt-8 divide-y divide-gold-faint border-b border-gold-faint">
+          {FAQS.map((faq, idx) => {
+            const isOpen = openFaq === idx;
             return (
-              <li key={f.q} className={`${CARD} p-0 ${open ? "border-gold" : ""}`}>
+              <div key={faq.q} className="py-4">
                 <button
-                  onClick={() => setOpenFaq(open ? null : i)}
-                  aria-expanded={open}
-                  className="flex w-full items-center justify-between gap-4 p-5 text-left transition hover:text-gold sm:p-6"
+                  type="button"
+                  onClick={() => setOpenFaq(isOpen ? null : idx)}
+                  aria-expanded={isOpen}
+                  className="flex w-full items-center justify-between gap-6 text-left"
                 >
-                  <span className="text-sm text-cream sm:text-base">{f.q}</span>
-                  <span className={`shrink-0 text-xl text-gold transition-transform duration-300 ${open ? "rotate-45" : ""}`}>+</span>
+                  <span className="text-sm font-medium text-cream sm:text-base">{faq.q}</span>
+                  <span className="shrink-0 text-xs uppercase tracking-widest text-gold">
+                    {isOpen ? "Cerrar" : "Ver"}
+                  </span>
                 </button>
-                <div className={`grid transition-all duration-500 ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
-                  <div className="overflow-hidden">
-                    <p className="px-5 pb-5 text-sm leading-relaxed text-cream/90 sm:px-6 sm:pb-6">{f.a}</p>
-                  </div>
-                </div>
-              </li>
+                {isOpen && (
+                  <p className="mt-3 max-w-2xl text-sm leading-relaxed text-cream/85">
+                    {faq.a}
+                  </p>
+                )}
+              </div>
             );
           })}
-        </ul>
+        </div>
       </section>
 
-      {/* Cierre */}
-      <section data-reveal className="reveal mt-20 sm:mt-24">
-        <div className={`${CARD} flex flex-col gap-6 md:flex-row md:items-center md:justify-between md:gap-8`}>
-          <div>
-            <p className="font-serif text-xl text-cream sm:text-3xl">¿Querés el número exacto?</p>
-            <p className="mt-2 text-sm text-cream/85">Contanos tu carga y te respondemos con una cotización formal.</p>
-          </div>
-          <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
-            <a href={waLink(waText)} target="_blank" rel="noopener" className="font-medium text-gold underline-offset-4 hover:underline">
-              Cotizar por WhatsApp
-            </a>
-            <Link href="/como-funciona" className="text-cream underline-offset-4 hover:text-gold hover:underline">
-              Cómo funciona
-            </Link>
-          </div>
+      <section data-reveal className="reveal flex flex-col justify-between gap-6 border-t border-gold-faint pt-10 sm:flex-row sm:items-center">
+        <div>
+          <p className="font-serif text-xl text-cream">¿Tenés lista de empaque o factura proforma?</p>
+          <p className="mt-1 text-sm text-soft">Pasala y revisamos la operación completa sin compromiso.</p>
+        </div>
+        <div className="flex items-center gap-6 text-sm">
+          <a
+            href={waLink(whatsappMessage)}
+            target="_blank"
+            rel="noopener"
+            className="font-medium text-gold underline decoration-gold/50 underline-offset-4 hover:decoration-gold"
+          >
+            Escribir por WhatsApp
+          </a>
+          <Link href="/como-funciona" className="text-cream underline decoration-cream/30 underline-offset-4 hover:text-gold">
+            Ver proceso
+          </Link>
         </div>
       </section>
 
       <style>{`
-        .reveal { opacity: 0; transform: translateY(24px); transition: opacity .9s ease, transform .9s cubic-bezier(.2,.8,.2,1); }
+        .reveal { opacity: 0; transform: translateY(18px); transition: opacity .75s ease, transform .75s ease; }
         .reveal.is-in { opacity: 1; transform: none; }
         select option { background: #ffffff; color: #1c1812; }
         @media (prefers-reduced-motion: reduce) {
           .reveal { opacity: 1; transform: none; transition: none; }
         }
       `}</style>
-    </>
+    </div>
   );
 }
