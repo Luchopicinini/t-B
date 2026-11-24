@@ -3,13 +3,17 @@ export const SITE = {
   fullName: "T&B Global Logística Internacional",
   whatsapp: "5493512076334",
   whatsappDisplay: "+54 9 351 207-6334",
+  whatsapp2: "56974891078",
+  whatsappDisplay2: "+56 9 7489 1078",
   email: "tbgloballogistica@gmail.com",
   address: "Hilarion Plaza 4157, Cerro de las Rosas, Córdoba Capital (X5009)",
   pricePerKg: 10,
 } as const;
 
-export const waLink = (text = "Hola! Quiero cotizar una importación") =>
-  `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(text)}`;
+export const waLink = (
+  text = "Hola! Quiero cotizar una importación",
+  phone: string = SITE.whatsapp
+) => `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
 
 export const SERVICES = [
   { code: "FCL", title: "Contenedor completo", text: "Para volúmenes grandes. Tu mercadería viaja en un contenedor exclusivo para vos." },

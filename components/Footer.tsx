@@ -68,7 +68,6 @@ function TruckRear() {
       <text x="130" y="89" textAnchor="middle" fontFamily="Lora, Georgia, serif" fontSize="22" fontWeight="600" fill="#f5ead2">
         T&amp;B
       </text>
-    
 
       {/* Parachoques */}
       <rect x="22" y="150" width="216" height="9" rx="2" fill="#030200" stroke="#ffa600" strokeWidth="1" />
@@ -127,19 +126,24 @@ export default function Footer() {
         <ul className="space-y-5 text-sm md:justify-self-end">
           <li>
             <p className="mb-1 text-[11px] tracking-[0.15em] text-soft">WhatsApp</p>
-            <a href={waLink()} target="_blank" rel="noopener" className="text-cream/85 transition hover:text-gold">
-              {SITE.whatsappDisplay}
-            </a>
-            <li>
+            <div className="flex flex-col gap-1.5">
               <a
-              href={`https://wa.me/${SITE.whatsapp2}`}
-              target="_blank"
-              rel="noopener"
-              className="text-cream/85 transition hover:text-gold"
-            >
-              {SITE.whatsappDisplay2}
-            </a>
-          </li>
+                href={waLink()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-cream/85 transition hover:text-gold"
+              >
+                {SITE.whatsappDisplay}
+              </a>
+              <a
+                href={`https://wa.me/${SITE.whatsapp2}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-cream/85 transition hover:text-gold"
+              >
+                {SITE.whatsappDisplay2}
+              </a>
+            </div>
           </li>
           <li>
             <p className="mb-1 text-[11px] tracking-[0.15em] text-soft">Correo</p>
