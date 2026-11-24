@@ -297,6 +297,21 @@ export default function Contacto() {
       <section data-reveal className="reveal mt-20 sm:mt-24">
         <p className={LABEL}>Desde dónde llega tu carga</p>
         <h2 className="mt-3 font-serif text-2xl text-cream sm:text-4xl">Rutas que trabajamos cada semana</h2>
+
+        <div className={`${CARD} mt-6 overflow-hidden p-0 sm:mt-8`}>
+          <div className="relative aspect-[16/7]">
+            <img
+              src="/img/barco-hapag-lloyd.jpeg"
+              alt="Barco de carga con contenedores navegando"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            <p className="absolute bottom-4 left-5 text-[11px] uppercase tracking-[0.25em] text-white">
+              Rutas de importación
+            </p>
+          </div>
+        </div>
+
         <div className="mt-6 sm:mt-8">
           <RouteHero />
         </div>

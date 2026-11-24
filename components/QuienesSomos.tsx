@@ -32,18 +32,7 @@ const TEAM = [
     bio: "Aliada estratégica de T&B Global y responsable de unir dos mercados con una sola operación. Desde Chile dirige la logística entre ambos países y abre nuevas oportunidades comerciales a los dos lados de la cordillera. Planifica cada traslado y conoce de cerca a cada cliente.",
     image: "/media/3.png",
   },
-    {
-    name: "",
-    role: "",
-    bio: "",
-    image: "",
-  },
-    {
-    name: "",
-    role: "",
-    bio: "",
-    image: "",
-  },
+
 ];
 
 const VALUES = [

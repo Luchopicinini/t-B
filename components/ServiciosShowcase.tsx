@@ -430,6 +430,13 @@ export default function ServiciosShowcase() {
           className="rise grid w-full min-w-0 grid-cols-1 gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:gap-16"
         >
           <div className="min-w-0">
+            {mode.id === "lcl" && (
+              <img
+                src="/img/carga-especial-puerto.jpg"
+                alt="Carga lista para embarcar en el puerto"
+                className="mb-6 aspect-[16/9] w-full border border-gold-faint object-cover"
+              />
+            )}
             <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[5/3]">
               <Illustration id={mode.id} />
             </div>
